@@ -36,14 +36,18 @@ public:
 
 	bool checkAABBCollision(const Entity& otherEnt) const
 	{
+		// Check if bounding boxes overlap.
 		return ((otherEnt.pos.x + otherEnt.boundsRadius) >= (this->pos.x - this->boundsRadius) &&
 				(otherEnt.pos.x - otherEnt.boundsRadius) <= (this->pos.x + this->boundsRadius) &&
 				(otherEnt.pos.y + otherEnt.boundsRadius) >= (this->pos.y - this->boundsRadius) &&
 				(otherEnt.pos.y - otherEnt.boundsRadius) <= (this->pos.y + this->boundsRadius) );
 	}
 
-	bool checkRadiusCollision(const Entity& otherEnt) const
+	bool checkRadialCollision(const Entity& otherEnt) const
 	{
+		// Slightly faster than AABB.
+
+		// Check if radii sum is larger than the distance between the two objects.
 		double diffx = this->pos.x - otherEnt.pos.x;
 		double diffy = this->pos.y - otherEnt.pos.y;
 		double radii = this->boundsRadius + otherEnt.boundsRadius;

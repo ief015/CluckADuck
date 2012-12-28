@@ -282,7 +282,7 @@ void CluckADuck::onTick(float ms)
 	for (int i = 0, sz = ducks.size(); i < sz; ++i)
 	{
 		Ducky* duck = ducks[i];
-		if (player->checkRadiusCollision(*duck))
+		if (player->checkRadialCollision(*duck))
 		{
 			// Duck hit the player.
 			this->gmDuckHitPlayer(duck);
@@ -293,7 +293,7 @@ void CluckADuck::onTick(float ms)
 	for (int i = 0, sz = items.size(); i < sz; ++i)
 	{
 		Powerup* powerup = items[i];
-		if (player->checkAABBCollision(*powerup))
+		if (player->checkRadialCollision(*powerup))
 		{
 			// Pick up powerup.
 			this->gmPlayerPickUpPowerup(powerup);
@@ -314,7 +314,7 @@ void CluckADuck::onTick(float ms)
 		{
 			Ducky* duck = ducks[j];
 
-			if (bullet->checkRadiusCollision(*duck))
+			if (bullet->checkRadialCollision(*duck))
 			{
 				// Perform damage.
 				this->gmPlayerHitDuck(duck, bullet);
@@ -348,7 +348,7 @@ void CluckADuck::onTick(float ms)
 		{
 			Ducky* duck = ducks[j];
 
-			if (blast->checkRadiusCollision(*duck))
+			if (blast->checkRadialCollision(*duck))
 			{
 				// Perform damage.
 				this->gmPlayerExplodeDuck(duck, blast);
