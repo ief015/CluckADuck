@@ -15,7 +15,7 @@ CluckADuck::~CluckADuck()
 bool CluckADuck::onInitialize(unsigned w, unsigned h)
 {
 	// Create window.
-	this->getRW().create(sf::VideoMode(w, h), "Cluck-a-Duck: Approximately Nine of Them Edition", sf::Style::Close, sf::ContextSettings(16, 0, 4));
+	this->getRW().create(sf::VideoMode(w, h), "Cluck-A-Duck: Approximately Nine of Them Edition", sf::Style::Close, sf::ContextSettings(16, 0, 4));
 	this->getRW().setKeyRepeatEnabled(false);
 	randomInit();
 
