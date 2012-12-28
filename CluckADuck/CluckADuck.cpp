@@ -127,7 +127,7 @@ bool CluckADuck::onInitialize(unsigned w, unsigned h)
 	sndPickUp.setBuffer(*sndbufPickUp);
 	sndExplosion.setBuffer(*sndbufExplosion);
 
-	// Initialize game.
+	// Initialize game values.
 	player = new Player();
 	score = 0;
 	gameTime = 0.;
@@ -151,7 +151,7 @@ bool CluckADuck::onInitialize(unsigned w, unsigned h)
 void CluckADuck::onTerminate()
 {
 	// Clear class resources.
-	FontRes::StaticInit();
+	FontRes::StaticQuit();
 
 	Ducky::StaticQuit();
 	Player::StaticQuit();
