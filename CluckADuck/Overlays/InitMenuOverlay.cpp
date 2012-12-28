@@ -31,7 +31,8 @@ InitMenuOverlay::InitMenuOverlay() : Overlay()
 		"\n"
 		"Reminder:\n"
 		"You only start with off with\n"
-		"one extra life. Use it wisely!\n"
+		"one extra life and one bomb.\n"
+		"Use them wisely!\n"
 	, FontRes::getDefaultFont(), 18);
 	txtInstructions.setColor(sf::Color(225, 160, 100));
 
@@ -76,23 +77,23 @@ void InitMenuOverlay::onDraw(sf::RenderTarget& rt)
 	rt.draw(txtTitle);
 	rt.draw(txtSubTitle);
 
-	txtInstructions.setPosition(rt.getSize().x - 350.f, rt.getSize().y/2.f + 36.f);
+	txtInstructions.setPosition(rt.getSize().x - 350.f, rt.getSize().y/2.f + 24.f);
 	rt.draw(txtInstructions);
 
 	sprIcon.setTexture(*Powerup::TEXTURE_LIFE);
-	sprIcon.setPosition(rt.getSize().x - 354.f, rt.getSize().y/2.f + 120.f);
+	sprIcon.setPosition(rt.getSize().x - 354.f, rt.getSize().y/2.f + 108.f);
 	rt.draw(sprIcon);
 
 	sprIcon.setTexture(*Powerup::TEXTURE_BOMB);
-	sprIcon.setPosition(rt.getSize().x - 354.f, rt.getSize().y/2.f + 140.f);
+	sprIcon.setPosition(rt.getSize().x - 354.f, rt.getSize().y/2.f + 128.f);
 	rt.draw(sprIcon);
 
 	sprIcon.setTexture(*Powerup::TEXTURE_INV);
-	sprIcon.setPosition(rt.getSize().x - 354.f, rt.getSize().y/2.f + 160.f);
+	sprIcon.setPosition(rt.getSize().x - 354.f, rt.getSize().y/2.f + 148.f);
 	rt.draw(sprIcon);
 
 	sprIcon.setTexture(*Powerup::TEXTURE_POINTS);
-	sprIcon.setPosition(rt.getSize().x - 354.f, rt.getSize().y/2.f + 180.f);
+	sprIcon.setPosition(rt.getSize().x - 354.f, rt.getSize().y/2.f + 168.f);
 	rt.draw(sprIcon);
 
 	txtMenu.setPosition(12.f, rt.getSize().y/2.f + 72.f);

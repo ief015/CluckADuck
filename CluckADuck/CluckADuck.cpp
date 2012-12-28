@@ -712,7 +712,7 @@ void CluckADuck::initGame(CluckADuck::GAME_MODE mode)
 	player->setPos(scrW/2., scrH/2.);
 	player->setVel(0., 0.);
 	player->lives = 1;
-	player->bombCount = 0;
+	player->bombCount = 1;
 	player->invincibility = false;
 	player->invincibilityTime = 0.;
 
