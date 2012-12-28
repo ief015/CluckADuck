@@ -259,18 +259,22 @@ void CluckADuck::onTick(float ms)
 	if (player->getPos().x >= static_cast<double>(scrW))
 	{
 		player->setPosX(static_cast<double>(scrW));
+		player->setVelX(0.);
 	}
 	else if (player->getPos().x < 0.)
 	{
 		player->setPosX(0.);
+		player->setVelX(0.);
 	}
 	if (player->getPos().y >= static_cast<double>(scrH))
 	{
 		player->setPosY(static_cast<double>(scrH));
+		player->setVelY(0.);
 	}
 	else if (player->getPos().y < 0.)
 	{
 		player->setPosY(0.);
+		player->setVelY(0.);
 	}
 
 	// Perform player-duck collision checks.
@@ -454,20 +458,26 @@ void CluckADuck::onDrawSF()
 	overlay->draw(rw);
 
 	// Draw debug.
-	if (debugMode != 0)
+	if (debugMode != 0 && !this->isPaused())
 	{
 		std::stringstream str;
 		str << "FPS: " << (int)this->getFPS() << std::endl;
 
-		if (debugMode == 2)
+		if (debugMode >= 2)
 		{
 			str << "MS: " << (int)this->getMS() << std::endl;
-			str << std::endl;
-			str << "player.pos:\t" << player->getPos().x << "\t" << player->getPos().y << std::endl;
-			str << "player.vel:\t" << player->getVel().x << "\t" << player->getVel().y << std::endl;
-			str << std::endl;
-			str << "bullets.count:\t" << bullets.size() << std::endl;
-			str << "ducks.count:\t" << ducks.size() << std::endl;
+			if (debugMode == 3)
+			{
+				str << std::endl;
+				str << "player.pos:\t" << player->getPos().x << "\t" << player->getPos().y << std::endl;
+				str << "player.vel:\t" << player->getVel().x << "\t" << player->getVel().y << std::endl;
+				str << std::endl;
+				str << "bullets.count:\t" << bullets.size() << std::endl;
+				str << "ducks.count:\t" << ducks.size() << std::endl;
+				str << "items.count:\t" << items.size() << std::endl;
+				str << "explosions.count:\t" << explosions.size() << std::endl;
+				str << "indicators.count:\t" << indicators.size() << std::endl;
+			}
 		}
 
 		txtDebug.setString(str.str());
@@ -545,7 +555,7 @@ void CluckADuck::onKeyDown(int key)
 		// Show/Hide debug.
 	case sf::Keyboard::Tilde:
 		this->debugMode++;
-		if (this->debugMode > 2)
+		if (this->debugMode > 3)
 			this->debugMode = 0;
 		break;
 
@@ -570,10 +580,6 @@ void CluckADuck::onKeyDown(int key)
 	case sf::Keyboard::D:
 	case sf::Keyboard::Right:
 		player->startInput(Player::INPUT_MOVE_RIGHT);
-		break;
-	case sf::Keyboard::Space:
-	case sf::Keyboard::RShift:
-		player->startInput(Player::INPUT_MOVE_DODGE);
 		break;
 
 	}
@@ -604,10 +610,6 @@ void CluckADuck::onKeyUp(int key)
 	case sf::Keyboard::D:
 	case sf::Keyboard::Right:
 		player->endInput(Player::INPUT_MOVE_RIGHT);
-		break;
-	case sf::Keyboard::Space:
-	case sf::Keyboard::RShift:
-		player->endInput(Player::INPUT_MOVE_DODGE);
 		break;
 
 	}

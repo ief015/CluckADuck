@@ -12,7 +12,6 @@ public: enum PLAYER_INPUT
 		INPUT_MOVE_DOWN,
 		INPUT_MOVE_LEFT,
 		INPUT_MOVE_RIGHT,
-		INPUT_MOVE_DODGE,
 		INPUT_GUN_FIRE
 	};
 
@@ -43,11 +42,6 @@ public:
 	double accelerationSpeed;
 	double maxMoveSpeed;
 	double slowdownSpeed;
-	double maxSpeed;
-	
-	double dodgeSpeed;
-	double dodgeRate;
-	double nextDodge;
 
 	double fireRate;
 	double nextBullet;

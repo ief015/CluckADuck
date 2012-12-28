@@ -34,18 +34,12 @@ Player::Player() : Entity()
 	accelerationSpeed = 0.15;
 	slowdownSpeed = 0.08;
 	maxMoveSpeed = 2.4;
-	dodgeSpeed = 5.2;
-	maxSpeed = 6.;
 
-	lives = 0; // No extra lives.
-
+	lives = 0;
 	bombCount = 0;
 	invincibility = false;
 	invincibilityTime = 0.;
 	invincibilityTimeSet = 0.;
-
-	dodgeRate = 1000.; // 1 second
-	nextDodge = dodgeRate;
 }
 
 Player::~Player()
@@ -55,49 +49,6 @@ Player::~Player()
 
 void Player::onInput(PLAYER_INPUT in)
 {
-	switch(in)
-	{
-	case INPUT_MOVE_DODGE: {
-
-		if (nextDodge < dodgeRate)
-			break;
-
-		vec2 dir = vec2New();
-
-		bool testMovement = false;
-		if (this->checkInput(INPUT_MOVE_UP))
-		{
-			dir.y -= 1.;
-			testMovement = true;
-		}
-		if (this->checkInput(INPUT_MOVE_DOWN))
-		{
-			dir.y += 1.;
-			testMovement = true;
-		}
-		if (this->checkInput(INPUT_MOVE_LEFT))
-		{
-			dir.x -= 1.;
-			testMovement = true;
-		}
-		if (this->checkInput(INPUT_MOVE_RIGHT))
-		{
-			dir.x += 1.;
-			testMovement = true;
-		}
-
-		if (!testMovement)
-			break;
-
-		dir = vec2Normalize(dir);
-
-		vel.x += dodgeSpeed*dir.x;
-		vel.y += dodgeSpeed*dir.y;
-
-		nextDodge = 0.;
-
-		break; }
-	}
 }
 
 Bullet* Player::fireWeapon()
@@ -127,37 +78,31 @@ void Player::giveInvincibility(double time)
 
 void Player::update(float dt)
 {
-	double len;
-	vec2 norm = vec2Normalize(vel, &len);
-
 	// Accelerate player.
-	if (len <= maxMoveSpeed)
+	if (this->checkInput(INPUT_MOVE_UP))
 	{
-		if (this->checkInput(INPUT_MOVE_UP))
-		{
-			vel.y -= accelerationSpeed;
-		}
-		if (this->checkInput(INPUT_MOVE_DOWN))
-		{
-			vel.y += accelerationSpeed;
-		}
-		if (this->checkInput(INPUT_MOVE_LEFT))
-		{
-			vel.x -= accelerationSpeed;
-		}
-		if (this->checkInput(INPUT_MOVE_RIGHT))
-		{
-			vel.x += accelerationSpeed;
-		}
+		vel.y -= accelerationSpeed;
+	}
+	if (this->checkInput(INPUT_MOVE_DOWN))
+	{
+		vel.y += accelerationSpeed;
+	}
+	if (this->checkInput(INPUT_MOVE_LEFT))
+	{
+		vel.x -= accelerationSpeed;
+	}
+	if (this->checkInput(INPUT_MOVE_RIGHT))
+	{
+		vel.x += accelerationSpeed;
 	}
 
 	// Limit speed.
-	norm = vec2Normalize(vel, &len);
-
-	if (len > maxSpeed)
+	double len;
+	vec2 norm = vec2Normalize(vel, &len);
+	if (len > maxMoveSpeed)
 	{
-		vel.x = norm.x*maxSpeed;
-		vel.y = norm.y*maxSpeed;
+		vel.x = norm.x * maxMoveSpeed;
+		vel.y = norm.y * maxMoveSpeed;
 	}
 
 	// Slow down.
@@ -198,7 +143,6 @@ void Player::update(float dt)
 	}
 
 	// Increase timers.
-	nextDodge += dt;
 	nextBullet += dt;
 	
 	// Update position.
@@ -207,8 +151,8 @@ void Player::update(float dt)
 
 void Player::draw(sf::RenderTarget& rt)
 {
+	// Draw player.
 	spr.setPosition(pos.x, pos.y);
 	spr.setRotation(static_cast<float>(atan2(pos.y-mousey, pos.x-mousex) / 3.141592653589793238462643383279502884 * 180.)-90.);
-
 	rt.draw(spr);
 }
