@@ -14,7 +14,7 @@ private:
 
 public:
 	CluckADuck* game;
-	GameOverOverlay();
+	GameOverOverlay(CluckADuck* g);
 	virtual ~GameOverOverlay();
 
 	virtual void onShown();

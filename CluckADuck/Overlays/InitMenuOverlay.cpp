@@ -5,9 +5,9 @@
 
 #include "../Entities/Powerup.hpp"
 
-InitMenuOverlay::InitMenuOverlay() : Overlay()
+InitMenuOverlay::InitMenuOverlay(CluckADuck* g) : Overlay()
 {
-	this->game = NULL;
+	game = g;
 
 	this->overrideControls(true);
 

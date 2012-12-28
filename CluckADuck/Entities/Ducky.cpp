@@ -120,7 +120,7 @@ void Ducky::draw(sf::RenderTarget& rt)
 	// Set up transformations.
 	spr.setPosition(static_cast<float>(pos.x), static_cast<float>(pos.y));
 	spr.setRotation(static_cast<float>(atan2(vel.y, vel.x) / 3.141592653589793238462643383279502884 * 180.));
-	spr.setScale(static_cast<float>(scale), static_cast<float>((vel.x>=0.)?scale:-scale));
+	spr.setScale(static_cast<float>(this->scale), static_cast<float>((vel.x>=0.)?this->scale:-this->scale));
 
 	// Reddish colour indicates damage.
 	char reddish = static_cast<unsigned char>(this->health/this->maxHealth*255);

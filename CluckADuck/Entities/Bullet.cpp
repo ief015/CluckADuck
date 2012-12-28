@@ -28,8 +28,8 @@ void Bullet::StaticQuit()
 
 Bullet::Bullet() : Entity()
 {
-	boundsRadius = 6./2;
-	damage = 0.0;
+	this->boundsRadius = 6./2;
+	this->damage = 0.0;
 }
 
 Bullet::~Bullet()

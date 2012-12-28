@@ -3,9 +3,9 @@
 #include "../CluckADuck.hpp"
 #include "../font.hpp"
 
-GameOverOverlay::GameOverOverlay() : Overlay()
+GameOverOverlay::GameOverOverlay(CluckADuck* g) : Overlay()
 {
-	this->game = NULL;
+	game = g;
 
 	this->overrideControls(true);
 

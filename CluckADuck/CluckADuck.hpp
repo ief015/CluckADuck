@@ -26,8 +26,6 @@ private:
 	GameOverOverlay* overlayGameOver;
 	InitMenuOverlay* overlayInitMenu;
 
-	int scrW, scrH;
-
 	char debugMode;
 	sf::Text txtDebug;
 
@@ -51,6 +49,7 @@ public:
 	CluckADuck();
 	virtual ~CluckADuck();
 	
+	static int SCR_W, SCR_H;
 
 	// Game data
 

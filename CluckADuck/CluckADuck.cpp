@@ -11,16 +11,20 @@ CluckADuck::~CluckADuck()
 { }
 
 
+int CluckADuck::SCR_W = 800;
+int CluckADuck::SCR_H = 600;
+
 
 bool CluckADuck::onInitialize(unsigned w, unsigned h)
 {
 	// Create window.
 	this->getRW().create(sf::VideoMode(w, h), "Cluck-A-Duck: Approximately Nine of Them Edition", sf::Style::Close, sf::ContextSettings(16, 0, 4));
 	this->getRW().setKeyRepeatEnabled(false);
-	randomInit();
+	SCR_W = w;
+	SCR_H = h;
 
-	scrW = w;
-	scrH = h;
+	// Seed RNG.
+	randomInit();
 
 	// Initialize classes.
 	if (!FontRes::StaticInit())
@@ -55,7 +59,7 @@ bool CluckADuck::onInitialize(unsigned w, unsigned h)
 	}
 
 	// Set up debug.
-	debugMode = 0;
+	this->debugMode = 0;
 	txtDebug = sf::Text("", FontRes::getDefaultFont(), 11);
 	txtDebug.setStyle(sf::Text::Bold);
 	txtDebug.setColor(sf::Color(225, 225, 225, 200));
@@ -64,29 +68,27 @@ bool CluckADuck::onInitialize(unsigned w, unsigned h)
 	// Set up overlays.
 	overlay = new OverlayManager();
 	overlayPause = new PauseOverlay();
-	overlayGameOver = new GameOverOverlay();
-	overlayGameOver->game = this;
-	overlayInitMenu = new InitMenuOverlay();
-	overlayInitMenu->game = this;
+	overlayGameOver = new GameOverOverlay(this);
+	overlayInitMenu = new InitMenuOverlay(this);
 
 	// Set up HUD
 	txtScore = sf::Text("", FontRes::getDefaultFont(), 30);
 	txtScore.setStyle(sf::Text::Bold);
 	txtScore.setColor(sf::Color(0, 170, 255, 225));
-	txtScore.setPosition(10.f, scrH-35.f);
+	txtScore.setPosition(10.f, SCR_H-35.f);
 
 	txtLevel = sf::Text("", FontRes::getDefaultFont(), 22);
 	txtLevel.setColor(sf::Color(0, 170, 255, 225));
-	txtLevel.setPosition(10.f, scrH-58.f);
+	txtLevel.setPosition(10.f, SCR_H-58.f);
 
 	txtLives = sf::Text("", FontRes::getDefaultFont(), 14);
 	txtLives.setColor(sf::Color(50, 225, 100, 225));
-	txtLives.setPosition(28.f, scrH-74.f);
+	txtLives.setPosition(28.f, SCR_H-74.f);
 	txtLives.setStyle(sf::Text::Bold);
 
 	txtTime = sf::Text("", FontRes::getDefaultFont(), 22);
 	txtTime.setColor(sf::Color(0, 235, 25, 225));
-	txtTime.setPosition(scrW/2.f, 10.f);
+	txtTime.setPosition(SCR_W/2.f, 10.f);
 
 	txtInvincibilityTimer = sf::Text("", FontRes::getDefaultFont(), 16);
 	txtInvincibilityTimer.setColor(sf::Color(100, 200, 255, 235));
@@ -108,7 +110,7 @@ bool CluckADuck::onInitialize(unsigned w, unsigned h)
 	sprBombIcon.setTexture(texBombIcon);
 	sprPlayerIcon.setTexture(texPlayerIcon);
 
-	sprPlayerIcon.setPosition(10.f, scrH-76.f);
+	sprPlayerIcon.setPosition(10.f, SCR_H-76.f);
 
 	// Set up music.
 	msc.openFromFile("res/duck.ogg");
@@ -130,16 +132,16 @@ bool CluckADuck::onInitialize(unsigned w, unsigned h)
 
 	// Initialize game values.
 	player = new Player();
-	score = 0;
-	gameTime = 0.;
-	elapsedTime = 0.;
-	duckNormalCount = 0;
-	duckBossCount = 0;
-	level = 0;
-	nextlvlscore = 0;
-	usedExtraLives = 0;
-	usedInv = 0;
-	usedBombs = 0;
+	this->score = 0;
+	this->gameTime = 0.;
+	this->elapsedTime = 0.;
+	this->duckNormalCount = 0;
+	this->duckBossCount = 0;
+	this->level = 0;
+	this->nextlvlscore = 0;
+	this->usedExtraLives = 0;
+	this->usedInv = 0;
+	this->usedBombs = 0;
 
 	// Show main menu.
 	this->showMainMenu();
@@ -177,10 +179,10 @@ void CluckADuck::onTick(float ms)
 {
 	overlay->update(ms);
 
-	if (isPaused()) return;
+	if (this->isPaused()) return;
 
 	// Spawn duck
-	while (nextDuckSpawn >= duckSpawnRate)
+	while (this->nextDuckSpawn >= this->duckSpawnRate)
 	{
 		Ducky* duck = new Ducky();
 
@@ -188,21 +190,21 @@ void CluckADuck::onTick(float ms)
 		switch(sideToSpawn)
 		{
 		case 1: // left
-			duck->setPos(-50., randomd(0., static_cast<double>(scrH)));
+			duck->setPos(-50., randomd(0., static_cast<double>(SCR_H)));
 			break;
 		case 2: // right
-			duck->setPos(scrW+50., randomd(0., static_cast<double>(scrH)));
+			duck->setPos(SCR_W+50., randomd(0., static_cast<double>(SCR_H)));
 			break;
 		case 3: // top
-			duck->setPos(randomd(0., static_cast<double>(scrW)), -50.);
+			duck->setPos(randomd(0., static_cast<double>(SCR_W)), -50.);
 			break;
 		case 4: // bottom
-			duck->setPos(randomd(0., static_cast<double>(scrW)), scrH+50.);
+			duck->setPos(randomd(0., static_cast<double>(SCR_W)), SCR_H+50.);
 			break;
 		}
 		
-		double ang = atan2( duck->getPos().y - randomd(100., scrH-100.),
-							duck->getPos().x - randomd(150., scrW-150.));
+		double ang = atan2( duck->getPos().y - randomd(100., SCR_H-100.),
+							duck->getPos().x - randomd(150., SCR_W-150.));
 
 		duck->setVel(-cos(ang)*1., -sin(ang)*1.);
 
@@ -210,22 +212,22 @@ void CluckADuck::onTick(float ms)
 
 		ducks.push_back(duck);
 
-		nextDuckSpawn -= duckSpawnRate;
+		this->nextDuckSpawn -= this->duckSpawnRate;
 	}
 
-	// Check boundries.
+	// Check boundries for ducks.
 	for (int i = 0, sz = ducks.size(); i < sz; ++i)
 	{
 		Ducky& duck = *ducks[i];
 
-		if (duck.getPos().x >= static_cast<double>(scrW) || duck.getPos().x < 0.)
+		if (duck.getPos().x >= static_cast<double>(SCR_W) || duck.getPos().x < 0.)
 		{
 			if (duck.enteringField)
 				continue;
 			duck.setVelX(-duck.getVel().x);
 		}
 
-		if (duck.getPos().y >= static_cast<double>(scrH) || duck.getPos().y < 0.)
+		if (duck.getPos().y >= static_cast<double>(SCR_H) || duck.getPos().y < 0.)
 		{
 			if (duck.enteringField)
 				continue;
@@ -235,31 +237,37 @@ void CluckADuck::onTick(float ms)
 		if (duck.enteringField)
 			duck.enteringField = false;
 	}
+
+	// Check boundries for powerups.
 	for (int i = 0, sz = items.size(); i < sz; ++i)
 	{
 		Powerup& powerup = *items[i];
 
-		if (powerup.getPos().x >= static_cast<double>(scrW) || powerup.getPos().x < 0.)
+		if (powerup.getPos().x >= static_cast<double>(SCR_W) || powerup.getPos().x < 0.)
 			powerup.setVelX(-powerup.getVel().x);
 
-		if (powerup.getPos().y >= static_cast<double>(scrH) || powerup.getPos().y < 0.)
+		if (powerup.getPos().y >= static_cast<double>(SCR_H) || powerup.getPos().y < 0.)
 			powerup.setVelY(-powerup.getVel().y);
 	}
+
+	// Check boundries for bullets.
 	for (int i = 0, sz = bullets.size(); i < sz; ++i)
 	{
 		Bullet* bullet = bullets[i];
 
-		if (bullet->getPos().x >= static_cast<double>(scrW) || bullet->getPos().x < 0. ||
-			bullet->getPos().y >= static_cast<double>(scrH) || bullet->getPos().y < 0. )
+		if (bullet->getPos().x >= static_cast<double>(SCR_W) || bullet->getPos().x < 0. ||
+			bullet->getPos().y >= static_cast<double>(SCR_H) || bullet->getPos().y < 0. )
 		{
 			delete bullet;
 			bullets.erase(bullets.begin()+i);
 			--i; --sz;
 		}
 	}
-	if (player->getPos().x >= static_cast<double>(scrW))
+
+	// Check boundries for player.
+	if (player->getPos().x >= static_cast<double>(SCR_W))
 	{
-		player->setPosX(static_cast<double>(scrW));
+		player->setPosX(static_cast<double>(SCR_W));
 		player->setVelX(0.);
 	}
 	else if (player->getPos().x < 0.)
@@ -267,9 +275,9 @@ void CluckADuck::onTick(float ms)
 		player->setPosX(0.);
 		player->setVelX(0.);
 	}
-	if (player->getPos().y >= static_cast<double>(scrH))
+	if (player->getPos().y >= static_cast<double>(SCR_H))
 	{
-		player->setPosY(static_cast<double>(scrH));
+		player->setPosY(static_cast<double>(SCR_H));
 		player->setVelY(0.);
 	}
 	else if (player->getPos().y < 0.)
@@ -424,7 +432,7 @@ void CluckADuck::onTick(float ms)
 	this->gmTick(ms);
 
 	// Increase timers.
-	nextDuckSpawn += ms;
+	this->nextDuckSpawn += ms;
 }
 
 
@@ -459,15 +467,15 @@ void CluckADuck::onDrawSF()
 	overlay->draw(rw);
 
 	// Draw debug.
-	if (debugMode != 0 && !this->isPaused())
+	if (this->debugMode != 0 && !this->isPaused())
 	{
 		std::stringstream str;
 		str << "FPS: " << (int)this->getFPS() << std::endl;
 
-		if (debugMode >= 2)
+		if (this->debugMode >= 2)
 		{
 			str << "MS: " << (int)this->getMS() << std::endl;
-			if (debugMode == 3)
+			if (this->debugMode == 3)
 			{
 				str << std::endl;
 				str << "player.pos:\t" << player->getPos().x << "\t" << player->getPos().y << std::endl;
@@ -697,19 +705,19 @@ void CluckADuck::initGame(CluckADuck::GAME_MODE mode)
 	this->cleanupWorld();
 
 	// Reset some game values.
-	score = 0;
-	elapsedTime = 0.;
-	duckNormalCount = 0;
-	duckBossCount = 0;
-	nextDuckSpawn = 0.;
-	usedExtraLives = 0;
-	usedInv = 0;
-	usedBombs = 0;
+	this->score = 0;
+	this->elapsedTime = 0.;
+	this->duckNormalCount = 0;
+	this->duckBossCount = 0;
+	this->nextDuckSpawn = 0.;
+	this->usedExtraLives = 0;
+	this->usedInv = 0;
+	this->usedBombs = 0;
 
 	// Set up player.
 	player->clearInput();
 
-	player->setPos(scrW/2., scrH/2.);
+	player->setPos(SCR_W/2., SCR_H/2.);
 	player->setVel(0., 0.);
 	player->lives = 1;
 	player->bombCount = 1;
@@ -717,7 +725,7 @@ void CluckADuck::initGame(CluckADuck::GAME_MODE mode)
 	player->invincibilityTime = 0.;
 
 	// Initialize game mode.
-	gamemode = mode;
+	this->gamemode = mode;
 	this->gmInit();
 }
 
@@ -763,32 +771,34 @@ void CluckADuck::gameOver()
 
 void CluckADuck::gmInit()
 {
-	if (gamemode == MODE_NORMAL)
+	if (this->gamemode == MODE_NORMAL)
 	{
 		// Set game values for Normal Mode.
 
-		level = 1;
-		nextlvlscore = 50;
+		this->level = 1;
+		this->nextlvlscore = 50;
 
-		duckSpawnRate = 1000.;
+		this->duckSpawnRate = 1000.;
 
 		player->bulletSpeed = 12.;
 		player->bulletDamage = 1.;
 		player->fireRate = 325.;
 		player->nextBullet = player->fireRate;
 
-		gameTime = 60000.;
+		this->gameTime = 60000.;
 	}
-	else if (gamemode == MODE_MOO)
+	else if (this->gamemode == MODE_MOO)
 	{
 		// Set game values for MoO Mode.
 
-		duckSpawnRate = 65.;
+		this->duckSpawnRate = 65.;
 		
 		player->bulletSpeed = 12.;
 		player->bulletDamage = 1.;
 		player->fireRate = 20.;
 		player->nextBullet = player->fireRate;
+
+		this->gameTime = 0.;
 
 		msc.play();
 	}
@@ -822,20 +832,20 @@ void CluckADuck::gmTick(float dt)
 		ind->pos.y -= 0.5f;
 	}
 
-	if (gamemode == MODE_NORMAL)
+	if (this->gamemode == MODE_NORMAL)
 	{
 		// If timer runs out of time, game over.
-		if (gameTime <= 0)
+		if (this->gameTime <= 0)
 		{
 			this->gameOver();
 		}
 
 		// Decrease timer.
-		gameTime -= dt;
+		this->gameTime -= dt;
 	}
 
 	// Increase elapsed time.
-	elapsedTime += dt;
+	this->elapsedTime += dt;
 }
 
 void CluckADuck::gmDraw(sf::RenderTarget& rt)
@@ -854,49 +864,50 @@ void CluckADuck::gmDraw(sf::RenderTarget& rt)
 		rt.draw(txtIndicator);
 	}
 
+	char buf[32];
+
 	// Display score.
-	std::stringstream str;
-	str << "Score: " << this->score;
-	txtScore.setString(str.str());
+	sprintf(buf, "Score: %d", this->score);
+	txtScore.setString(buf);
 	rt.draw(txtScore);
 
 	// Display time.
 	double t = 0.;
-	if (gamemode == MODE_NORMAL)
+	int tOff = 0;
+	if (this->gamemode == MODE_NORMAL)
 	{
-		t = gameTime;
+		t = this->gameTime;
 	}
-	else if (gamemode == MODE_MOO)
+	else if (this->gamemode == MODE_MOO)
 	{
-		t = elapsedTime;
+		t = this->elapsedTime;
 	}
 	int hours = (int)(t/3600000);
 	t -= hours*3600000.;
 	int mins = (int)(t/60000);
 	t -= mins*60000.;
 	int secs = (int)(t/1000);
-	str.str("");
+
 	if (hours)
-		str << hours << ":" << (mins < 10 ? "0" : "") << (mins == 0 ? "0" : "");
+		tOff += sprintf(buf, "%d:", hours);
 	if (mins)
-		str << mins << ":" << (secs < 10 ? "0" : "") << (secs == 0 ? "0" : "");
-	if (secs)
-		str << secs;
-	txtTime.setString(str.str());
+		tOff += sprintf(buf+tOff, "%s%d:", (mins<10 ? "0" : ""), mins);
+	sprintf(buf+tOff, "%s%d", (secs<10 ? "0" : ""), secs);
+	txtTime.setString(buf);
+
 	txtTime.setOrigin(txtTime.getGlobalBounds().width/2.f, txtTime.getGlobalBounds().height/2.f);
 	rt.draw(txtTime);
 
 	// Display lives.
-	str.str("");
-	str << "x " << player->lives;
-	txtLives.setString(str.str());
-	rt.draw(sprPlayerIcon);
+	sprintf(buf, "x %d", player->lives);
+	txtLives.setString(buf);
 	rt.draw(txtLives);
+	rt.draw(sprPlayerIcon);
 
 	// Display bombs available.
 	for (unsigned i = 0; i < player->bombCount; ++i)
 	{
-		sprBombIcon.setPosition(10.f + i*4.f, scrH-96.f);
+		sprBombIcon.setPosition(10.f + i*5.f, SCR_H-96.f);
 		rt.draw(sprBombIcon);
 	}
 
@@ -904,11 +915,9 @@ void CluckADuck::gmDraw(sf::RenderTarget& rt)
 	if (player->invincibility)
 	{
 		// Display invicibility timer.
+		sprintf(buf, "%d", (int)(player->invincibilityTime/1000.));
+		txtInvincibilityTimer.setString(buf);
 
-		str.str("");
-		str << (int)(player->invincibilityTime/1000.);
-
-		txtInvincibilityTimer.setString(str.str());
 		txtInvincibilityTimer.setOrigin(txtInvincibilityTimer.getGlobalBounds().width/2.f,
 										txtInvincibilityTimer.getGlobalBounds().height/2.f);
 		txtInvincibilityTimer.setPosition(static_cast<float>(player->getPos().x), static_cast<float>(player->getPos().y + 16.));
@@ -925,12 +934,11 @@ void CluckADuck::gmDraw(sf::RenderTarget& rt)
 		rt.draw(c);
 	}
 
-	if (gamemode == MODE_NORMAL)
+	if (this->gamemode == MODE_NORMAL)
 	{
 		// Display game level.
-		str.str("");
-		str << "Level: " << level;
-		txtLevel.setString(str.str());
+		sprintf(buf, "Level: %d", this->level);
+		txtLevel.setString(buf);
 		rt.draw(txtLevel);
 	}
 }
@@ -940,7 +948,7 @@ void CluckADuck::gmDuckSpawned(Ducky* duck)
 	// Set up duck's properties.
 
 	// Is it a big duck?
-	bool boss = (randomdexpd(10) >= (gamemode==MODE_MOO ? 0.99 : 0.98));
+	bool boss = (randomdexpd(10) >= (this->gamemode==MODE_MOO ? 0.99 : 0.98));
 
 	if (boss)
 	{
@@ -961,16 +969,16 @@ void CluckADuck::gmDuckSpawned(Ducky* duck)
 		duck->typeChar = 'n'; // 'n'ormal
 	}
 
-	if (gamemode == MODE_NORMAL)
+	if (this->gamemode == MODE_NORMAL)
 	{
 		// Modify properties according to game level.
 
-		duck->maxHealth += duck->maxHealth * (level-1)*1.75;
+		duck->maxHealth += duck->maxHealth * (this->level-1)*1.75;
 
 		if (boss)
-			duck->score += 8*(level-1);
+			duck->score += 8*(this->level-1);
 		else
-			duck->score += 3*(level-1);
+			duck->score += 3*(this->level-1);
 	}
 
 	// Set duck to full health.
@@ -998,11 +1006,11 @@ void CluckADuck::gmDuckKilled(Ducky* duck)
 	else if (duck->typeChar == 'b')
 	{
 		// Boss duck explodes.
-		if (gamemode == MODE_NORMAL)
+		if (this->gamemode == MODE_NORMAL)
 		{
-			this->addBlast(duck->getPos(), 225., 10. + 10.*(level * 0.25));
+			this->addBlast(duck->getPos(), 225., 10. + 10.*(this->level * 0.25));
 		}
-		else if (gamemode == MODE_MOO)
+		else if (this->gamemode == MODE_MOO)
 		{
 			this->addBlast(duck->getPos(), 225., 10.);
 		}
@@ -1013,35 +1021,35 @@ void CluckADuck::gmDuckKilled(Ducky* duck)
 	
 	// Random powerup drop.
 	Powerup* powerup = NULL;
-	double r = randomdexpd( (gamemode == MODE_MOO) ? 12. : 8.);
-	if (r >= (gamemode == MODE_MOO ? 0.995 : 0.975))
+	double r = randomdexpd( (this->gamemode == MODE_MOO) ? 12. : 8.);
+	if (r >= (this->gamemode == MODE_MOO ? 0.995 : 0.975))
 	{
 		// Life power up.
 		powerup = new Powerup();
 		powerup->setupLifePowerup(this);
 	}
-	else if (r >= (gamemode == MODE_MOO ? 0.98 : 0.925))
+	else if (r >= (this->gamemode == MODE_MOO ? 0.98 : 0.925))
 	{
 		// Invicibility power up.
 		powerup = new Powerup();
 		powerup->setupInvPowerup(this);
 	}
-	else if (r >= (gamemode == MODE_MOO ? 0.95 : 0.825))
+	else if (r >= (this->gamemode == MODE_MOO ? 0.95 : 0.825))
 	{
 		// Bomb power up.
 		powerup = new Powerup();
 		powerup->setupBombPowerup(this);
 	}
-	else if (r >= (gamemode == MODE_MOO ? 0.25 : 0.125))
+	else if (r >= (this->gamemode == MODE_MOO ? 0.25 : 0.125))
 	{
 		// Points power up.
 		powerup = new Powerup();
 
-		if (gamemode == MODE_NORMAL)
+		if (this->gamemode == MODE_NORMAL)
 		{
 			powerup->setupPointsPowerup(this, static_cast<int>((this->level-1)*5 + 10));
 		}
-		else if (gamemode == MODE_MOO)
+		else if (this->gamemode == MODE_MOO)
 		{
 			powerup->setupPointsPowerup(this, 25);
 		}
@@ -1057,10 +1065,10 @@ void CluckADuck::gmDuckKilled(Ducky* duck)
 		items.push_back(powerup);
 	}
 
-	if (gamemode == MODE_NORMAL)
+	if (this->gamemode == MODE_NORMAL)
 	{
 		// Give some extra time.
-		gameTime += 1200.;
+		this->gameTime += 1200.;
 	}
 }
 
@@ -1112,27 +1120,27 @@ void CluckADuck::gmAddScore(int add)
 	// Add score.
 	this->score += add;
 
-	if (gamemode == MODE_NORMAL)
+	if (this->gamemode == MODE_NORMAL)
 	{
 		// Level up check.
-		while (score >= nextlvlscore)
+		while (this->score >= this->nextlvlscore)
 		{
 			// Upgrade weapons.
-			player->bulletDamage = 1. + (level * 0.75);
-			player->fireRate -= 35 / (level * 0.75);
+			player->bulletDamage = 1. + (this->level * 0.75);
+			player->fireRate -= 35 / (this->level * 0.75);
 			if (player->fireRate < 16.)
 				player->fireRate = 16.;
 
 			// Make ducks spawn faster.
-			duckSpawnRate -= 25 / (level*0.165);
-			if (duckSpawnRate < 75.)
-				duckSpawnRate = 75.;
+			this->duckSpawnRate -= 25 / (this->level*0.165);
+			if (this->duckSpawnRate < 75.)
+				this->duckSpawnRate = 75.;
 
 			// Increase next level score requirement.
-			nextlvlscore += level*50 + (level-1)*25;
+			this->nextlvlscore += level*50 + (this->level-1)*25;
 
 			// Increase player level.
-			++level;
+			this->level++;
 		}
 	}
 }
@@ -1145,11 +1153,11 @@ void CluckADuck::gmPlayerShoot(Bullet* bullet)
 void CluckADuck::gmPlayerDetonateBomb(Blast* blast)
 {
 	// Set damage.
-	if (gamemode == MODE_NORMAL)
+	if (this->gamemode == MODE_NORMAL)
 	{
 		blast->damage = 17.5 + 17.5*(level * 0.25);
 	}
-	else if (gamemode == MODE_MOO)
+	else if (this->gamemode == MODE_MOO)
 	{
 		blast->damage = 10.;
 	}

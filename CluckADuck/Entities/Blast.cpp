@@ -6,7 +6,7 @@ double Blast::SHOCKWAVE_SPEED = 11.;
 Blast::Blast(double lifetime) : Entity()
 , life(lifetime)
 {
-	boundsRadius = 0.;
+	this->boundsRadius = 0.;
 }
 
 Blast::~Blast()
@@ -45,7 +45,7 @@ void Blast::draw(sf::RenderTarget& rt)
 
 	sf::CircleShape c(static_cast<float>(this->boundsRadius));
 
-	c.setPosition(static_cast<float>(this->pos.x), static_cast<float>(this->pos.y));
+	c.setPosition(static_cast<float>(pos.x), static_cast<float>(pos.y));
 	c.setOrigin(static_cast<float>(this->boundsRadius), static_cast<float>(this->boundsRadius));
 	c.setOutlineThickness(3.f);
 	c.setFillColor(sf::Color::Transparent);

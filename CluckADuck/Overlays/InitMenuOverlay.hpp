@@ -19,7 +19,7 @@ private:
 public:
 	CluckADuck* game;
 	int gamemode;
-	InitMenuOverlay();
+	InitMenuOverlay(CluckADuck* g);
 	virtual ~InitMenuOverlay();
 
 	virtual void onShown();

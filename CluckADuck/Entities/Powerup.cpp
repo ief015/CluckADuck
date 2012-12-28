@@ -49,19 +49,19 @@ void Powerup::StaticQuit()
 
 Powerup::Powerup() : Entity()
 {
-	boundsRadius = 24./2;
-	powerData = NULL;
-	powerType = TYPE_UNKNOWN;
+	this->boundsRadius = 24./2;
+	this->powerData = NULL;
+	this->powerType = TYPE_UNKNOWN;
 	this->life = LIFETIME;
 	this->blinkingTime = 0.;
-	blink = false;
-	isSetUp = false;
+	this->blink = false;
+	this->isSetUp = false;
 }
 
 Powerup::~Powerup()
 {
-	if (powerData)
-		delete powerData;
+	if (this->powerData)
+		delete this->powerData;
 }
 
 
@@ -75,7 +75,7 @@ void Powerup::setupBombPowerup(CluckADuck* g)
 	spr.setTexture(*TEXTURE_BOMB);
 	spr.setOrigin(spr.getTexture()->getSize().x/2.f, spr.getTexture()->getSize().x/2.f);
 
-	isSetUp = true;
+	this->isSetUp = true;
 }
 
 void Powerup::setupInvPowerup(CluckADuck* g)
@@ -88,7 +88,7 @@ void Powerup::setupInvPowerup(CluckADuck* g)
 	spr.setTexture(*TEXTURE_INV);
 	spr.setOrigin(spr.getTexture()->getSize().x/2.f, spr.getTexture()->getSize().x/2.f);
 
-	isSetUp = true;
+	this->isSetUp = true;
 }
 
 void Powerup::setupLifePowerup(CluckADuck* g)
@@ -101,7 +101,7 @@ void Powerup::setupLifePowerup(CluckADuck* g)
 	spr.setTexture(*TEXTURE_LIFE);
 	spr.setOrigin(spr.getTexture()->getSize().x/2.f, spr.getTexture()->getSize().x/2.f);
 
-	isSetUp = true;
+	this->isSetUp = true;
 }
 
 void Powerup::setupPointsPowerup(CluckADuck* g, int score)
@@ -117,21 +117,21 @@ void Powerup::setupPointsPowerup(CluckADuck* g, int score)
 	powerData = new PowerupData_Points();
 	((PowerupData_Points*)powerData)->points = score;
 
-	isSetUp = true;
+	this->isSetUp = true;
 }
 
 
 void Powerup::use()
 {
 	// Is this powerup ready to be used?
-	if (!isSetUp)
+	if (!this->isSetUp)
 		return;
 
 	// Use powerup.
-	switch (powerType)
+	switch (this->powerType)
 	{
 	case TYPE_BOMB:
-		++game->player->bombCount; // Give a bomb.
+		game->player->bombCount++; // Give a bomb.
 		break;
 
 	case TYPE_INV:
@@ -139,12 +139,12 @@ void Powerup::use()
 		break;
 
 	case TYPE_LIFE:
-		++game->player->lives; // Give a life.
+		game->player->lives++; // Give a life.
 		break;
 
 	case TYPE_POINTS:
 		// Add some points to score.
-		game->gmAddScore(((PowerupData_Points*)powerData)->points);
+		game->gmAddScore(((PowerupData_Points*)this->powerData)->points);
 		break;
 	}
 }
@@ -157,17 +157,17 @@ void Powerup::update(float dt)
 		return;
 
 	// Decrease lifetime.
-	life -= dt;
+	this->life -= dt;
 
 	// Blink if under 5 seconds.
-	if (life < 5000.)
+	if (this->life < 5000.)
 	{
-		blinkingTime += dt;
+		this->blinkingTime += dt;
 
-		if (blinkingTime > 250.)
+		if (this->blinkingTime > 250.)
 		{
-			blink = !blink;
-			blinkingTime = 0.;
+			this->blink = !this->blink;
+			this->blinkingTime = 0.;
 		}
 	}
 
@@ -176,7 +176,7 @@ void Powerup::update(float dt)
 
 void Powerup::draw(sf::RenderTarget& rt)
 {
-	if (blink)
+	if (this->blink)
 		return;
 
 	spr.setPosition(static_cast<float>(pos.x), static_cast<float>(pos.y));

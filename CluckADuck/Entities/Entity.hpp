@@ -15,7 +15,7 @@ public:
 	{
 		pos.x = 0.; pos.y = 0.;
 		vel.x = 0.; vel.y = 0.;
-		boundsRadius = 0.;
+		this->boundsRadius = 0.;
 	}
 	virtual ~Entity()
 	{}
