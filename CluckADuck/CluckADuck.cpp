@@ -1043,7 +1043,7 @@ void CluckADuck::gmDuckKilled(Ducky* duck)
 		}
 		else if (gamemode == MODE_MOO)
 		{
-			powerup->setupPointsPowerup(this, 10);
+			powerup->setupPointsPowerup(this, 25);
 		}
 	}
 
