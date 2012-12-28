@@ -67,6 +67,8 @@ Powerup::~Powerup()
 
 void Powerup::setupBombPowerup(CluckADuck* g)
 {
+	// Set this as a +1 Bomb powerup.
+
 	this->game = g;
 	this->powerType = TYPE_BOMB;
 
@@ -78,6 +80,8 @@ void Powerup::setupBombPowerup(CluckADuck* g)
 
 void Powerup::setupInvPowerup(CluckADuck* g)
 {
+	// Set this as an Invincible powerup.
+
 	this->game = g;
 	this->powerType = TYPE_INV;
 
@@ -89,6 +93,8 @@ void Powerup::setupInvPowerup(CluckADuck* g)
 
 void Powerup::setupLifePowerup(CluckADuck* g)
 {
+	// Set this as a +1 Life powerup.
+
 	this->game = g;
 	this->powerType = TYPE_LIFE;
 
@@ -100,6 +106,8 @@ void Powerup::setupLifePowerup(CluckADuck* g)
 
 void Powerup::setupPointsPowerup(CluckADuck* g, int score)
 {
+	// Set this as a Points powerup.
+
 	this->game = g;
 	this->powerType = TYPE_POINTS;
 
@@ -115,9 +123,11 @@ void Powerup::setupPointsPowerup(CluckADuck* g, int score)
 
 void Powerup::use()
 {
+	// Is this powerup ready to be used?
 	if (!isSetUp)
 		return;
 
+	// Use powerup.
 	switch (powerType)
 	{
 	case TYPE_BOMB:

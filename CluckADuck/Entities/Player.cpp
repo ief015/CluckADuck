@@ -35,6 +35,7 @@ Player::Player() : Entity()
 	slowdownSpeed = 0.08;
 	maxMoveSpeed = 2.4;
 
+	// Default minimal properties.
 	lives = 0;
 	bombCount = 0;
 	invincibility = false;
@@ -53,17 +54,23 @@ void Player::onInput(PLAYER_INPUT in)
 
 Bullet* Player::fireWeapon()
 {
+	// Are we able to fire weapon again yet?
 	if (nextBullet < fireRate)
 		return NULL;
 
+	// Create new bullet.
 	Bullet* b = new Bullet();
 
+	// Set position and velocity based on where the
+	// player is and direction player is looking.
 	double ang = atan2(pos.y - mousey, pos.x - mousex);
-
 	b->setPos(pos.x + -cos(ang)*boundsRadius, pos.y + -sin(ang)*boundsRadius);
 	b->setVel(-cos(ang)*bulletSpeed, -sin(ang)*bulletSpeed);
+
+	// Give the bullet some damage to it.
 	b->damage = bulletDamage;
 
+	// Reset cooldown.
 	nextBullet = 0.;
 
 	return b;
@@ -71,6 +78,7 @@ Bullet* Player::fireWeapon()
 
 void Player::giveInvincibility(double time)
 {
+	// Give player invincibility. Time does not stack.
 	invincibility = true;
 	invincibilityTime = time;
 	invincibilityTimeSet = time;

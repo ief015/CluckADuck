@@ -77,11 +77,12 @@ bool CluckADuck::onInitialize(unsigned w, unsigned h)
 
 	txtLevel = sf::Text("", FontRes::getDefaultFont(), 22);
 	txtLevel.setColor(sf::Color(0, 170, 255, 225));
-	txtLevel.setPosition(10.f, scrH-64.f);
+	txtLevel.setPosition(10.f, scrH-58.f);
 
 	txtLives = sf::Text("", FontRes::getDefaultFont(), 14);
 	txtLives.setColor(sf::Color(50, 225, 100, 225));
 	txtLives.setPosition(28.f, scrH-74.f);
+	txtLives.setStyle(sf::Text::Bold);
 
 	txtTime = sf::Text("", FontRes::getDefaultFont(), 22);
 	txtTime.setColor(sf::Color(0, 235, 25, 225));
@@ -292,7 +293,7 @@ void CluckADuck::onTick(float ms)
 	for (int i = 0, sz = items.size(); i < sz; ++i)
 	{
 		Powerup* powerup = items[i];
-		if (player->checkRadiusCollision(*powerup))
+		if (player->checkAABBCollision(*powerup))
 		{
 			// Pick up powerup.
 			this->gmPlayerPickUpPowerup(powerup);
@@ -860,7 +861,7 @@ void CluckADuck::gmDraw(sf::RenderTarget& rt)
 	rt.draw(txtScore);
 
 	// Display time.
-	double t;
+	double t = 0.;
 	if (gamemode == MODE_NORMAL)
 	{
 		t = gameTime;
@@ -996,8 +997,15 @@ void CluckADuck::gmDuckKilled(Ducky* duck)
 	}
 	else if (duck->typeChar == 'b')
 	{
-		// If boss duck, explode.
-		this->addBlast(duck->getPos(), 225., 2.);
+		// Boss duck explodes.
+		if (gamemode == MODE_NORMAL)
+		{
+			this->addBlast(duck->getPos(), 225., 10. + 10.*(level * 0.25));
+		}
+		else if (gamemode == MODE_MOO)
+		{
+			this->addBlast(duck->getPos(), 225., 10.);
+		}
 
 		// Increase kill count.
 		this->duckBossCount++;

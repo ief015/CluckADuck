@@ -20,15 +20,20 @@ InitMenuOverlay::InitMenuOverlay() : Overlay()
 	txtMenu.setColor(sf::Color(225, 180, 0));
 
 	txtInstructions = sf::Text(
-		"Don't touch the ducks!\n"
+		"Shoot the ducks, but don't\n"
+		"touch them!\n"
 		"\n"
 		"Power-Ups:\n"
 		"\t+1 Life\n"
 		"\t+1 Bomb (Right click to use)\n"
 		"\tInvincibility mode (For 15 seconds)\n"
 		"\tExtra points\n"
+		"\n"
+		"Reminder:\n"
+		"You only start with off with\n"
+		"one extra life. Use it wisely!\n"
 	, FontRes::getDefaultFont(), 18);
-	txtInstructions.setColor(sf::Color(225, 225, 0));
+	txtInstructions.setColor(sf::Color(225, 160, 100));
 
 	txtTitle = sf::Text("Cluck-A-Duck", FontRes::getDefaultFont(), 72);
 	txtTitle.setStyle(sf::Text::Bold);
@@ -75,19 +80,19 @@ void InitMenuOverlay::onDraw(sf::RenderTarget& rt)
 	rt.draw(txtInstructions);
 
 	sprIcon.setTexture(*Powerup::TEXTURE_LIFE);
-	sprIcon.setPosition(rt.getSize().x - 354.f, rt.getSize().y/2.f + 100.f);
-	rt.draw(sprIcon);
-
-	sprIcon.setTexture(*Powerup::TEXTURE_BOMB);
 	sprIcon.setPosition(rt.getSize().x - 354.f, rt.getSize().y/2.f + 120.f);
 	rt.draw(sprIcon);
 
-	sprIcon.setTexture(*Powerup::TEXTURE_INV);
+	sprIcon.setTexture(*Powerup::TEXTURE_BOMB);
 	sprIcon.setPosition(rt.getSize().x - 354.f, rt.getSize().y/2.f + 140.f);
 	rt.draw(sprIcon);
 
-	sprIcon.setTexture(*Powerup::TEXTURE_POINTS);
+	sprIcon.setTexture(*Powerup::TEXTURE_INV);
 	sprIcon.setPosition(rt.getSize().x - 354.f, rt.getSize().y/2.f + 160.f);
+	rt.draw(sprIcon);
+
+	sprIcon.setTexture(*Powerup::TEXTURE_POINTS);
+	sprIcon.setPosition(rt.getSize().x - 354.f, rt.getSize().y/2.f + 180.f);
 	rt.draw(sprIcon);
 
 	txtMenu.setPosition(12.f, rt.getSize().y/2.f + 72.f);

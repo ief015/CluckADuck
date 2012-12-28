@@ -24,9 +24,11 @@ bool Ducky::StaticInit()
 	SNDBUF_QUACK3 = new sf::SoundBuffer();
 	SNDBUF_QUACK4 = new sf::SoundBuffer();
 
+	// Load ducky texture.
 	if (!TEXTURE->loadFromFile("res/ducky.png"))
 		return false;
 
+	// Load quacking sounds.
 	if (!SNDBUF_QUACK1->loadFromFile("res/quack1.wav"))
 		return false;
 	if (!SNDBUF_QUACK2->loadFromFile("res/quack2.wav"))
@@ -64,10 +66,9 @@ void Ducky::StaticQuit()
 
 Ducky::Ducky() : Entity()
 {
-	setScale(1.f);
-
-	enteringField = true;
-	typeChar = 0;
+	this->setScale(1.f);
+	this->enteringField = true;
+	this->typeChar = 0;
 
 	spr.setOrigin(TEXTURE->getSize().x/2.f, TEXTURE->getSize().x/2.f);
 	spr.setTexture(*TEXTURE);
@@ -80,12 +81,15 @@ Ducky::~Ducky()
 
 void Ducky::setScale(double scl)
 {
+	// Scale up the bound radius.
 	this->boundsRadius = 48./2 * scl;
 	this->scale = scl;
 }
 
 void Ducky::quack()
 {
+	// Choose a random quack sound to play.
+
 	int s = randomiinc(1,4);
 
 	switch(s)
@@ -107,17 +111,21 @@ void Ducky::quack()
 
 void Ducky::update(float dt)
 {
+	// Update position.
 	Entity::update(dt);
 }
 
 void Ducky::draw(sf::RenderTarget& rt)
 {
+	// Set up transformations.
 	spr.setPosition(pos.x, pos.y);
 	spr.setRotation(static_cast<float>(atan2(vel.y, vel.x) / 3.141592653589793238462643383279502884 * 180.));
 	spr.setScale(static_cast<float>(scale), static_cast<float>((vel.x>=0.)?scale:-scale));
 
+	// Reddish colour indicates damage.
 	char reddish = static_cast<unsigned char>(this->health/this->maxHealth*255);
 	spr.setColor(sf::Color(255,reddish,reddish));
 
+	// Draw duck.
 	rt.draw(spr);
 }

@@ -39,11 +39,13 @@ Bullet::~Bullet()
 
 void Bullet::update(float dt)
 {
+	// Update bullet position.
 	Entity::update(dt);
 }
 
 void Bullet::draw(sf::RenderTarget& rt)
 {
+	// Draw bullet.
 	SPRITE.setPosition(pos.x, pos.y);
 	rt.draw(SPRITE);
 }

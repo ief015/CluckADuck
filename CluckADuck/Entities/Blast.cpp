@@ -35,16 +35,18 @@ void Blast::update(float dt)
 	this->boundsRadius += SHOCKWAVE_SPEED;
 	this->life -= dt;
 
-//	Entity::update(dt);
+	// No need to update positions.
+	// Entity::update(dt);
 }
 
 void Blast::draw(sf::RenderTarget& rt)
 {
+	// Draw the shockwave.
+
 	sf::CircleShape c(this->boundsRadius);
 
 	c.setPosition(static_cast<float>(this->pos.x), static_cast<float>(this->pos.y));
 	c.setOrigin(static_cast<float>(this->boundsRadius), static_cast<float>(this->boundsRadius));
-
 	c.setOutlineThickness(3.f);
 	c.setFillColor(sf::Color::Transparent);
 	c.setOutlineColor(sf::Color(255, 255, 255, 150));
