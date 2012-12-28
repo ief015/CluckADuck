@@ -1,0 +1,49 @@
+#include "Bullet.hpp"
+
+#include <math.h>
+
+sf::Texture* Bullet::TEXTURE = NULL;
+sf::Sprite Bullet::SPRITE = sf::Sprite();
+bool Bullet::StaticInit()
+{
+	TEXTURE = new sf::Texture();
+
+	if (!TEXTURE->loadFromFile("res/bullet.png"))
+		return false;
+
+	TEXTURE->setSmooth(true);
+	TEXTURE->setRepeated(false);
+
+	SPRITE.setOrigin(TEXTURE->getSize().x/2.f, TEXTURE->getSize().x/2.f);
+	SPRITE.setTexture(*TEXTURE);
+
+	return true;
+}
+
+void Bullet::StaticQuit()
+{
+	delete TEXTURE;
+}
+
+
+Bullet::Bullet() : Entity()
+{
+	boundsRadius = 6./2;
+	damage = 0.0;
+}
+
+Bullet::~Bullet()
+{
+}
+
+
+void Bullet::update(float dt)
+{
+	Entity::update(dt);
+}
+
+void Bullet::draw(sf::RenderTarget& rt)
+{
+	SPRITE.setPosition(pos.x, pos.y);
+	rt.draw(SPRITE);
+}
