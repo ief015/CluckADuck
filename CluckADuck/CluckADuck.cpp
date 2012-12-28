@@ -968,9 +968,9 @@ void CluckADuck::gmDuckSpawned(Ducky* duck)
 		duck->maxHealth += duck->maxHealth * (level-1)*1.75;
 
 		if (boss)
-			duck->score += 5*(level-1);
+			duck->score += 8*(level-1);
 		else
-			duck->score += 2*(level-1);
+			duck->score += 3*(level-1);
 	}
 
 	// Set duck to full health.
@@ -1026,7 +1026,7 @@ void CluckADuck::gmDuckKilled(Ducky* duck)
 		powerup = new Powerup();
 		powerup->setupInvPowerup(this);
 	}
-	else if (r >= (gamemode == MODE_MOO ? 0.95 : 0.85))
+	else if (r >= (gamemode == MODE_MOO ? 0.95 : 0.825))
 	{
 		// Bomb power up.
 		powerup = new Powerup();
@@ -1124,7 +1124,7 @@ void CluckADuck::gmAddScore(int add)
 				player->fireRate = 16.;
 
 			// Make ducks spawn faster.
-			duckSpawnRate -= 25 / (level*0.175);
+			duckSpawnRate -= 25 / (level*0.165);
 			if (duckSpawnRate < 75.)
 				duckSpawnRate = 75.;
 
@@ -1147,7 +1147,7 @@ void CluckADuck::gmPlayerDetonateBomb(Blast* blast)
 	// Set damage.
 	if (gamemode == MODE_NORMAL)
 	{
-		blast->damage = 10. + 10.*(level * 0.25);
+		blast->damage = 17.5 + 17.5*(level * 0.25);
 	}
 	else if (gamemode == MODE_MOO)
 	{
