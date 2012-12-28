@@ -21,7 +21,8 @@ InitMenuOverlay::InitMenuOverlay() : Overlay()
 
 	txtInstructions = sf::Text(
 		"Shoot the ducks, but don't\n"
-		"touch them!\n"
+		"touch them! Don't let the time\n"
+		"run out in Normal Mode!\n"
 		"\n"
 		"Power-Ups:\n"
 		"\t+1 Life\n"
@@ -77,23 +78,23 @@ void InitMenuOverlay::onDraw(sf::RenderTarget& rt)
 	rt.draw(txtTitle);
 	rt.draw(txtSubTitle);
 
-	txtInstructions.setPosition(rt.getSize().x - 350.f, rt.getSize().y/2.f + 24.f);
+	txtInstructions.setPosition(rt.getSize().x - 350.f, rt.getSize().y/2.f + 4.f);
 	rt.draw(txtInstructions);
 
 	sprIcon.setTexture(*Powerup::TEXTURE_LIFE);
-	sprIcon.setPosition(rt.getSize().x - 354.f, rt.getSize().y/2.f + 108.f);
+	sprIcon.setPosition(rt.getSize().x - 354.f, rt.getSize().y/2.f + 110.f);
 	rt.draw(sprIcon);
 
 	sprIcon.setTexture(*Powerup::TEXTURE_BOMB);
-	sprIcon.setPosition(rt.getSize().x - 354.f, rt.getSize().y/2.f + 128.f);
+	sprIcon.setPosition(rt.getSize().x - 354.f, rt.getSize().y/2.f + 130.f);
 	rt.draw(sprIcon);
 
 	sprIcon.setTexture(*Powerup::TEXTURE_INV);
-	sprIcon.setPosition(rt.getSize().x - 354.f, rt.getSize().y/2.f + 148.f);
+	sprIcon.setPosition(rt.getSize().x - 354.f, rt.getSize().y/2.f + 150.f);
 	rt.draw(sprIcon);
 
 	sprIcon.setTexture(*Powerup::TEXTURE_POINTS);
-	sprIcon.setPosition(rt.getSize().x - 354.f, rt.getSize().y/2.f + 168.f);
+	sprIcon.setPosition(rt.getSize().x - 354.f, rt.getSize().y/2.f + 170.f);
 	rt.draw(sprIcon);
 
 	txtMenu.setPosition(12.f, rt.getSize().y/2.f + 72.f);
