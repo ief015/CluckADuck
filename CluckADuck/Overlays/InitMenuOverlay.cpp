@@ -68,7 +68,7 @@ void InitMenuOverlay::onUpdate(float dt)
 
 void InitMenuOverlay::onDraw(sf::RenderTarget& rt)
 {
-	sf::RectangleShape rect(sf::Vector2f(rt.getSize().x, rt.getSize().y));
+	sf::RectangleShape rect(sf::Vector2f(static_cast<float>(rt.getSize().x), static_cast<float>(rt.getSize().y)));
 	rect.setFillColor(sf::Color(0, 0, 0, 180));
 	rt.draw(rect);
 

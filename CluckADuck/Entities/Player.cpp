@@ -160,7 +160,7 @@ void Player::update(float dt)
 void Player::draw(sf::RenderTarget& rt)
 {
 	// Draw player.
-	spr.setPosition(pos.x, pos.y);
-	spr.setRotation(static_cast<float>(atan2(pos.y-mousey, pos.x-mousex) / 3.141592653589793238462643383279502884 * 180.)-90.);
+	spr.setPosition(static_cast<float>(pos.x), static_cast<float>(pos.y));
+	spr.setRotation(static_cast<float>(atan2(pos.y-mousey, pos.x-mousex) / 3.141592653589793238462643383279502884 * 180.)-90.f);
 	rt.draw(spr);
 }

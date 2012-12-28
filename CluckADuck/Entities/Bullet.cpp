@@ -46,6 +46,6 @@ void Bullet::update(float dt)
 void Bullet::draw(sf::RenderTarget& rt)
 {
 	// Draw bullet.
-	SPRITE.setPosition(pos.x, pos.y);
+	SPRITE.setPosition(static_cast<float>(pos.x), static_cast<float>(pos.y));
 	rt.draw(SPRITE);
 }

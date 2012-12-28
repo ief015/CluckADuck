@@ -179,6 +179,6 @@ void Powerup::draw(sf::RenderTarget& rt)
 	if (blink)
 		return;
 
-	spr.setPosition(pos.x, pos.y);
+	spr.setPosition(static_cast<float>(pos.x), static_cast<float>(pos.y));
 	rt.draw(spr);
 }

@@ -43,7 +43,7 @@ void Blast::draw(sf::RenderTarget& rt)
 {
 	// Draw the shockwave.
 
-	sf::CircleShape c(this->boundsRadius);
+	sf::CircleShape c(static_cast<float>(this->boundsRadius));
 
 	c.setPosition(static_cast<float>(this->pos.x), static_cast<float>(this->pos.y));
 	c.setOrigin(static_cast<float>(this->boundsRadius), static_cast<float>(this->boundsRadius));

@@ -86,7 +86,7 @@ bool CluckADuck::onInitialize(unsigned w, unsigned h)
 
 	txtTime = sf::Text("", FontRes::getDefaultFont(), 22);
 	txtTime.setColor(sf::Color(0, 235, 25, 225));
-	txtTime.setPosition(scrW/2., 10.f);
+	txtTime.setPosition(scrW/2.f, 10.f);
 
 	txtInvincibilityTimer = sf::Text("", FontRes::getDefaultFont(), 16);
 	txtInvincibilityTimer.setColor(sf::Color(100, 200, 255, 235));
@@ -894,7 +894,7 @@ void CluckADuck::gmDraw(sf::RenderTarget& rt)
 	rt.draw(txtLives);
 
 	// Display bombs available.
-	for (int i = 0; i < player->bombCount; ++i)
+	for (unsigned i = 0; i < player->bombCount; ++i)
 	{
 		sprBombIcon.setPosition(10.f + i*4.f, scrH-96.f);
 		rt.draw(sprBombIcon);
@@ -920,7 +920,7 @@ void CluckADuck::gmDraw(sf::RenderTarget& rt)
 		c.setFillColor(sf::Color::Transparent);
 		c.setOutlineThickness(static_cast<float>(player->invincibilityTime/player->invincibilityTimeSet * 6.));
 		c.setOutlineColor(sf::Color(100, 200, 255, 235));
-		c.setPosition(player->getPos().x, player->getPos().y);
+		c.setPosition(static_cast<float>(player->getPos().x), static_cast<float>(player->getPos().y));
 		c.setOrigin(24.f, 24.f);
 		rt.draw(c);
 	}
