@@ -31,9 +31,6 @@ private:
 	char debugMode;
 	sf::Text txtDebug;
 
-	double duckSpawnRate;
-	double nextDuckSpawn;
-
 protected:
 	virtual bool onInitialize(unsigned w, unsigned h);
 	virtual void onTerminate();
@@ -65,15 +62,21 @@ public:
 
 	double gameTime;
 	double elapsedTime;
+
 	unsigned long score;
+
 	unsigned int duckNormalCount;
 	unsigned int duckBossCount;
+
 	unsigned int level;
 	unsigned int nextlvlscore;
 
 	unsigned int usedExtraLives;
 	unsigned int usedInv;
 	unsigned int usedBombs;
+
+	double duckSpawnRate;
+	double nextDuckSpawn;
 
 
 	// Resources
