@@ -35,7 +35,7 @@ public:
 	App();
 	virtual ~App();
 
-	void initialize(unsigned w, unsigned h);
+	bool initialize(unsigned w, unsigned h);
 	void terminate();
 	void processEvents();
 	void tick(float ms);

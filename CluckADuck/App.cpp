@@ -14,10 +14,11 @@ App::~App()
 
 
 
-void App::initialize(unsigned w, unsigned h)
+bool App::initialize(unsigned w, unsigned h)
 {
 	rw = new sf::RenderWindow();
 	running = this->onInitialize(w, h);
+	return running;
 }
 
 

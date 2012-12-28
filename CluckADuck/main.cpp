@@ -10,9 +10,8 @@ int main(int argc, char* args[])
 	const float TICKRATE = 1.f/60;
 
 	app = new CluckADuck();
-	app->initialize(800, 600);
 
-	if (!app->isRunning())
+	if (!app->initialize(800, 600))
 	{
 		delete app;
 		return 1;
