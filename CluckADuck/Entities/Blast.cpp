@@ -5,6 +5,7 @@ double Blast::SHOCKWAVE_SPEED = 11.;
 
 Blast::Blast(double lifetime) : Entity()
 , life(lifetime)
+, lifeTimeSet(lifetime)
 {
 	this->boundsRadius = 0.;
 }
@@ -49,7 +50,7 @@ void Blast::draw(sf::RenderTarget& rt)
 	c.setOrigin(static_cast<float>(this->boundsRadius), static_cast<float>(this->boundsRadius));
 	c.setOutlineThickness(3.f);
 	c.setFillColor(sf::Color::Transparent);
-	c.setOutlineColor(sf::Color(255, 255, 255, 150));
+	c.setOutlineColor(sf::Color(255, 255, 255, static_cast<unsigned char>((this->life / this->lifeTimeSet)*150)) );
 
 	rt.draw(c);
 }

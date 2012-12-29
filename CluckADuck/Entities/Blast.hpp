@@ -12,6 +12,7 @@ private:
 	static double SHOCKWAVE_SPEED;
 
 	double life;
+	double lifeTimeSet;
 
 public:
 	Blast(double lifetime);
