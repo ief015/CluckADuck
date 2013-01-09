@@ -20,6 +20,17 @@ static void showErr(const char* fmt, ...)
 	delete[] buf;
 }
 
+static void showWarning(const char* fmt, ...)
+{
+	va_list l;
+
+	va_start(l, fmt);
+	int len = vprintf(fmt, l);
+
+	vprintf(fmt, l);
+	va_end(l);
+}
+
 static void randomInit()
 {
 	srand((unsigned)time(NULL));

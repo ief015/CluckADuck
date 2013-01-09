@@ -80,6 +80,10 @@ void App::processEvents()
 		this->onKeyUp(ev.key.code);
 		break;
 
+	case sf::Event::TextEntered:
+		this->onKeyText(ev.text.unicode);
+		break;
+
 	}
 }
 
@@ -166,6 +170,12 @@ void App::onKeyDown(int key)
 
 
 void App::onKeyUp(int key)
+{
+
+}
+
+
+void App::onKeyText(int ch)
 {
 
 }

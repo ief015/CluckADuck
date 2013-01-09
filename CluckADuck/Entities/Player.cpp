@@ -18,7 +18,8 @@ bool Player::StaticInit()
 
 void Player::StaticQuit()
 {
-	delete TEXTURE;
+	if (TEXTURE)
+		delete TEXTURE;
 }
 
 
@@ -41,6 +42,9 @@ Player::Player() : Entity()
 	this->invincibility = false;
 	this->invincibilityTime = 0.;
 	this->invincibilityTimeSet = 0.;
+	this->explosiveRounds = false;
+	this->explosiveRoundsTime = 0.;
+	this->explosiveRoundsTimeSet = 0.;
 	this->mousex = 0;
 	this->mousey = 0;
 }
@@ -84,6 +88,14 @@ void Player::giveInvincibility(double time)
 	this->invincibility = true;
 	this->invincibilityTime = time;
 	this->invincibilityTimeSet = time;
+}
+
+void Player::giveExplosiveRounds(double time)
+{
+	// Give player explosive rounds for a given time. Time does not stack.
+	this->explosiveRounds = true;
+	this->explosiveRoundsTime = time;
+	this->explosiveRoundsTimeSet = time;
 }
 
 void Player::update(float dt)
@@ -150,6 +162,17 @@ void Player::update(float dt)
 		// Are we still invincible?
 		if (this->invincibilityTime <= 0)
 			this->invincibility = false;
+	}
+
+	// Update explosive rounds powerup.
+	if (this->explosiveRounds)
+	{
+		// Decrease explosive rounds timer.
+		this->explosiveRoundsTime -= dt;
+
+		// Can we still use explosive rounds?
+		if (this->explosiveRoundsTime <= 0)
+			this->explosiveRounds = false;
 	}
 
 	// Increase timers.

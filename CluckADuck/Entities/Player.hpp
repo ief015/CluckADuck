@@ -51,6 +51,11 @@ public:
 
 	int lives;
 
+	void giveExplosiveRounds(double time);
+	bool explosiveRounds;
+	double explosiveRoundsTime;
+	double explosiveRoundsTimeSet;
+
 	void giveInvincibility(double time);
 	bool invincibility;
 	double invincibilityTime;

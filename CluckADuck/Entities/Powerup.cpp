@@ -4,17 +4,21 @@
 double Powerup::LIFETIME = 15000.; // 15 seconds
 
 sf::Texture* Powerup::TEXTURE_BOMB = NULL;
+sf::Texture* Powerup::TEXTURE_EXPROUNDS = NULL;
 sf::Texture* Powerup::TEXTURE_INV = NULL;
 sf::Texture* Powerup::TEXTURE_LIFE = NULL;
 sf::Texture* Powerup::TEXTURE_POINTS = NULL;
 bool Powerup::StaticInit()
 {
 	TEXTURE_BOMB = new sf::Texture();
+	TEXTURE_EXPROUNDS = new sf::Texture();
 	TEXTURE_INV = new sf::Texture();
 	TEXTURE_LIFE = new sf::Texture();
 	TEXTURE_POINTS = new sf::Texture();
 
 	if (!TEXTURE_BOMB->loadFromFile("res/pwuBomb.png"))
+		return false;
+	if (!TEXTURE_EXPROUNDS->loadFromFile("res/pwuExpRounds.png"))
 		return false;
 	if (!TEXTURE_INV->loadFromFile("res/pwuInv.png"))
 		return false;
@@ -25,6 +29,9 @@ bool Powerup::StaticInit()
 
 	TEXTURE_BOMB->setSmooth(true);
 	TEXTURE_BOMB->setRepeated(false);
+
+	TEXTURE_EXPROUNDS->setSmooth(true);
+	TEXTURE_EXPROUNDS->setRepeated(false);
 
 	TEXTURE_INV->setSmooth(true);
 	TEXTURE_INV->setRepeated(false);
@@ -40,10 +47,16 @@ bool Powerup::StaticInit()
 
 void Powerup::StaticQuit()
 {
-	delete TEXTURE_BOMB;
-	delete TEXTURE_INV;
-	delete TEXTURE_LIFE;
-	delete TEXTURE_POINTS;
+	if (TEXTURE_BOMB)
+		delete TEXTURE_BOMB;
+	if (TEXTURE_EXPROUNDS)
+		delete TEXTURE_EXPROUNDS;
+	if (TEXTURE_INV)
+		delete TEXTURE_INV;
+	if (TEXTURE_LIFE)
+		delete TEXTURE_LIFE;
+	if (TEXTURE_POINTS)
+		delete TEXTURE_POINTS;
 }
 
 
@@ -73,6 +86,19 @@ void Powerup::setupBombPowerup(CluckADuck* g)
 	this->powerType = TYPE_BOMB;
 
 	spr.setTexture(*TEXTURE_BOMB);
+	spr.setOrigin(spr.getTexture()->getSize().x/2.f, spr.getTexture()->getSize().x/2.f);
+
+	this->isSetUp = true;
+}
+
+void Powerup::setupExpRoundsPowerup(CluckADuck* g)
+{
+	// Set this as a +1 Bomb powerup.
+
+	this->game = g;
+	this->powerType = TYPE_EXPROUNDS;
+
+	spr.setTexture(*TEXTURE_EXPROUNDS);
 	spr.setOrigin(spr.getTexture()->getSize().x/2.f, spr.getTexture()->getSize().x/2.f);
 
 	this->isSetUp = true;
@@ -132,6 +158,10 @@ void Powerup::use()
 	{
 	case TYPE_BOMB:
 		game->player->bombCount++; // Give a bomb.
+		break;
+
+	case TYPE_EXPROUNDS:
+		game->player->giveExplosiveRounds(15000.); // 15 seconds.
 		break;
 
 	case TYPE_INV:

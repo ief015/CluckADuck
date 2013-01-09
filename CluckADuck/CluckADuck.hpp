@@ -1,7 +1,8 @@
 #pragma once
 #include "App.hpp"
 
-#include "font.hpp"
+#include "FontRes.hpp"
+#include "Highscores.hpp"
 
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
@@ -42,6 +43,7 @@ protected:
 	virtual void onMouseMove(int x, int y, int dx, int dy);
 	virtual void onKeyDown(int key);
 	virtual void onKeyUp(int key);
+	virtual void onKeyText(int ch);
 	virtual void onWindowResize(unsigned w, unsigned h);
 	virtual void onWindowClose();
 
@@ -71,11 +73,14 @@ public:
 	unsigned int nextlvlscore;
 
 	unsigned int usedExtraLives;
+	unsigned int usedExpRounds;
 	unsigned int usedInv;
 	unsigned int usedBombs;
 
 	double duckSpawnRate;
 	double nextDuckSpawn;
+
+	Highscores scoreboard;
 
 
 	// Resources
@@ -85,6 +90,7 @@ public:
 	sf::Text txtTime;
 	sf::Text txtLives;
 	sf::Text txtInvincibilityTimer;
+	sf::Text txtExplosiveRoundsTimer;
 	sf::Text txtIndicator;
 
 	sf::Texture texBombIcon;
@@ -100,6 +106,7 @@ public:
 	sf::Sound sndRubberDuck;
 	sf::Sound sndPickUp;
 	sf::Sound sndExplosion;
+	sf::Sound sndExplosionSmall;
 
 
 	// Game mode data, functions and events.
@@ -109,7 +116,7 @@ public:
 		MODE_NORMAL = 0,
 		MODE_MOO
 	};
-	int gamemode;
+	short gamemode;
 
 	struct Indicator
 	{

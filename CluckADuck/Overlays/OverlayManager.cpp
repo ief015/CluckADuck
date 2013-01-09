@@ -124,3 +124,14 @@ bool OverlayManager::keyUp(int key)
 	}
 	return false;
 }
+
+bool OverlayManager::keyText(int ch)
+{
+	for (int i = overlays.size()-1; i >= 0; --i)
+	{
+		overlays[i]->onKeyText(ch);
+		if (overlays[i]->hogControls)
+			return true;
+	}
+	return false;
+}

@@ -1,6 +1,6 @@
 #include "CluckADuck.hpp"
 #include "utils.hpp"
-#include "font.hpp"
+#include "FontRes.hpp"
 
 #include <sstream>
 
@@ -17,11 +17,27 @@ int CluckADuck::SCR_H = 600;
 
 bool CluckADuck::onInitialize(unsigned w, unsigned h)
 {
+	player = NULL;
+	sndbufRubberDuck = NULL;
+	sndbufPickUp = NULL;
+	sndbufExplosion = NULL;
+	overlay = NULL;
+	overlayPause = NULL;
+	overlayGameOver = NULL;
+	overlayInitMenu = NULL;
+
 	// Create window.
 	this->getRW().create(sf::VideoMode(w, h), "Cluck-A-Duck: Approximately Nine of Them Edition", sf::Style::Close, sf::ContextSettings(16, 0, 4));
 	this->getRW().setKeyRepeatEnabled(false);
 	SCR_W = w;
 	SCR_H = h;
+
+	// Set window icon. (Or, at least try to)
+	sf::Image ico;
+	if(ico.loadFromFile("res/duckico.png"))
+	{
+		this->getRW().setIcon(16, 16, ico.getPixelsPtr());
+	}
 
 	// Seed RNG.
 	randomInit();
@@ -60,7 +76,7 @@ bool CluckADuck::onInitialize(unsigned w, unsigned h)
 
 	// Set up debug.
 	this->debugMode = 0;
-	txtDebug = sf::Text("", FontRes::getDefaultFont(), 11);
+	txtDebug = sf::Text("", FontRes::getArcadeFont(), 11);
 	txtDebug.setStyle(sf::Text::Bold);
 	txtDebug.setColor(sf::Color(225, 225, 225, 200));
 	txtDebug.setPosition(5.f, 5.f);
@@ -72,29 +88,33 @@ bool CluckADuck::onInitialize(unsigned w, unsigned h)
 	overlayInitMenu = new InitMenuOverlay(this);
 
 	// Set up HUD
-	txtScore = sf::Text("", FontRes::getDefaultFont(), 30);
+	txtScore = sf::Text("", FontRes::getArcadeFont(), 30);
 	txtScore.setStyle(sf::Text::Bold);
 	txtScore.setColor(sf::Color(0, 170, 255, 225));
 	txtScore.setPosition(10.f, SCR_H-35.f);
 
-	txtLevel = sf::Text("", FontRes::getDefaultFont(), 22);
+	txtLevel = sf::Text("", FontRes::getArcadeFont(), 22);
 	txtLevel.setColor(sf::Color(0, 170, 255, 225));
 	txtLevel.setPosition(10.f, SCR_H-58.f);
 
-	txtLives = sf::Text("", FontRes::getDefaultFont(), 14);
+	txtLives = sf::Text("", FontRes::getArcadeFont(), 14);
 	txtLives.setColor(sf::Color(50, 225, 100, 225));
 	txtLives.setPosition(28.f, SCR_H-74.f);
 	txtLives.setStyle(sf::Text::Bold);
 
-	txtTime = sf::Text("", FontRes::getDefaultFont(), 22);
+	txtTime = sf::Text("", FontRes::getArcadeFont(), 22);
 	txtTime.setColor(sf::Color(0, 235, 25, 225));
 	txtTime.setPosition(SCR_W/2.f, 10.f);
 
-	txtInvincibilityTimer = sf::Text("", FontRes::getDefaultFont(), 16);
+	txtExplosiveRoundsTimer = sf::Text("", FontRes::getArcadeFont(), 16);
+	txtExplosiveRoundsTimer.setColor(sf::Color(255, 100, 0, 235));
+	txtExplosiveRoundsTimer.setStyle(sf::Text::Bold);
+
+	txtInvincibilityTimer = sf::Text("", FontRes::getArcadeFont(), 16);
 	txtInvincibilityTimer.setColor(sf::Color(100, 200, 255, 235));
 	txtInvincibilityTimer.setStyle(sf::Text::Bold);
 
-	txtIndicator = sf::Text("", FontRes::getDefaultFont(), 18);
+	txtIndicator = sf::Text("", FontRes::getArcadeFont(), 18);
 	txtIndicator.setColor(sf::Color(255, 255, 255, 255));
 	txtIndicator.setStyle(sf::Text::Bold);
 
@@ -121,14 +141,40 @@ bool CluckADuck::onInitialize(unsigned w, unsigned h)
 	sndbufRubberDuck = new sf::SoundBuffer();
 	sndbufPickUp = new sf::SoundBuffer();
 	sndbufExplosion = new sf::SoundBuffer();
-
 	sndbufRubberDuck->loadFromFile("res/rubberducky.wav");
 	sndbufPickUp->loadFromFile("res/pickup.wav");
 	sndbufExplosion->loadFromFile("res/bomb.wav");
-
 	sndRubberDuck.setBuffer(*sndbufRubberDuck);
 	sndPickUp.setBuffer(*sndbufPickUp);
 	sndExplosion.setBuffer(*sndbufExplosion);
+	sndExplosionSmall.setBuffer(*sndbufExplosion);
+	sndExplosionSmall.setPitch(2.5f);
+	sndExplosionSmall.setVolume(50.f);
+
+	// Set up highscore board.
+	if (Highscores::ERROR_RES score_err = scoreboard.load("highscores.qck"))
+	{
+		if (score_err == Highscores::ERR_CORRUPTED)
+		{
+			showErr("Error loading highscores: Corrupted highscore data. No highscore data was loaded.");
+		}
+		else if (score_err == Highscores::ERR_INVALIDFILE)
+		{
+			showErr("Error loading highscores: Invalid highscore data file. No highscore data was loaded.");
+		}
+		else if (score_err == Highscores::ERR_CANNOTCREATE)
+		{
+			showErr("Error loading highscores: Could not create data file. No highscore data was loaded.");
+		}
+		else if (score_err == Highscores::ERR_CANNOTREAD)
+		{
+			showErr("Error loading highscores: Could not read data file. No highscore data was loaded.");
+		}
+		else if (score_err == Highscores::ERR_LOWMEM)
+		{
+			showErr("Error loading highscores: Too low memory. No highscore data was loaded.");
+		}
+	}
 
 	// Initialize game values.
 	player = new Player();
@@ -142,6 +188,7 @@ bool CluckADuck::onInitialize(unsigned w, unsigned h)
 	this->usedExtraLives = 0;
 	this->usedInv = 0;
 	this->usedBombs = 0;
+	this->usedExpRounds = 0;
 
 	// Show main menu.
 	this->showMainMenu();
@@ -162,16 +209,30 @@ void CluckADuck::onTerminate()
 	Powerup::StaticQuit();
 	Blast::StaticQuit();
 
-	// Free player.
-	delete player;
-
 	// Clean world.
 	this->cleanupWorld();
 
+	// Free player.
+	if (player)
+		delete player;
+
+	// Free overlays
+	if (overlay)
+		delete overlay;
+	if (overlayPause)
+		delete overlayPause;
+	if (overlayGameOver)
+		delete overlayGameOver;
+	if (overlayInitMenu)
+		delete overlayInitMenu;
+
 	// Free other resources.
-	delete sndbufRubberDuck;
-	delete sndbufPickUp;
-	delete sndbufExplosion;
+	if (sndbufRubberDuck)
+		delete sndbufRubberDuck;
+	if (sndbufPickUp)
+		delete sndbufPickUp;
+	if (sndbufExplosion)
+		delete sndbufExplosion;
 }
 
 
@@ -326,16 +387,6 @@ void CluckADuck::onTick(float ms)
 			{
 				// Perform damage.
 				this->gmPlayerHitDuck(duck, bullet);
-				if (duck->health <= 0.)
-				{
-					// Duck died. :(
-					this->gmDuckKilled(duck);
-
-					// Remove duck.
-					delete duck;
-					ducks.erase(ducks.begin()+j);
-					--j; --jsz;
-				}
 
 				// Remove bullet.
 				delete bullet;
@@ -360,16 +411,6 @@ void CluckADuck::onTick(float ms)
 			{
 				// Perform damage.
 				this->gmPlayerExplodeDuck(duck, blast);
-				if (duck->health <= 0.)
-				{
-					// Duck died. :(
-					this->gmDuckKilled(duck);
-
-					// Remove duck.
-					delete duck;
-					ducks.erase(ducks.begin()+j);
-					--j; --jsz;
-				}
 			}
 		}
 	}
@@ -392,7 +433,25 @@ void CluckADuck::onTick(float ms)
 
 	// Update all ducks.
 	for (int i = 0, sz = ducks.size(); i < sz; ++i)
-		ducks[i]->update(ms);
+	{
+		Ducky* duck = ducks[i];
+
+		// Check if duck is alive.
+		if (duck->health <= 0.)
+		{
+			// Duck died. :(
+			this->gmDuckKilled(duck);
+
+			// Remove duck.
+			delete duck;
+			ducks.erase(ducks.begin()+i);
+			--i; --sz;
+
+			continue;
+		}
+
+		duck->update(ms);
+	}
 
 	// Update all powerups.
 	for (int i = 0, sz = items.size(); i < sz; ++i)
@@ -625,6 +684,13 @@ void CluckADuck::onKeyUp(int key)
 }
 
 
+void CluckADuck::onKeyText(int ch)
+{
+	if (overlay->keyText(ch))
+		return;
+}
+
+
 void CluckADuck::onWindowResize(unsigned w, unsigned h)
 {
 
@@ -648,9 +714,6 @@ Blast* CluckADuck::addBlast(const vec2& pos, double lifetime, double damage)
 	// Set specified properties.
 	blast->setPos(pos);
 	blast->damage = damage;
-
-	// Make explosion sound.
-	sndExplosion.play();
 
 	// Add explosion to game field.
 	explosions.push_back(blast);
@@ -722,7 +785,7 @@ void CluckADuck::initGame(CluckADuck::GAME_MODE mode)
 	player->lives = 1;
 	player->bombCount = 1;
 	player->invincibility = false;
-	player->invincibilityTime = 0.;
+	player->explosiveRounds = false;
 
 	// Initialize game mode.
 	this->gamemode = mode;
@@ -930,7 +993,29 @@ void CluckADuck::gmDraw(sf::RenderTarget& rt)
 		c.setOutlineThickness(static_cast<float>(player->invincibilityTime/player->invincibilityTimeSet * 6.));
 		c.setOutlineColor(sf::Color(100, 200, 255, 235));
 		c.setPosition(static_cast<float>(player->getPos().x), static_cast<float>(player->getPos().y));
-		c.setOrigin(24.f, 24.f);
+		c.setOrigin(26.f, 26.f);
+		rt.draw(c);
+	}
+
+	if (player->explosiveRounds)
+	{
+		// Display explosive rounds timer.
+		sprintf(buf, "%d", (int)(player->explosiveRoundsTime/1000.));
+		txtExplosiveRoundsTimer.setString(buf);
+
+		txtExplosiveRoundsTimer.setOrigin(txtExplosiveRoundsTimer.getGlobalBounds().width/2.f,
+										txtExplosiveRoundsTimer.getGlobalBounds().height/2.f);
+		txtExplosiveRoundsTimer.setPosition(static_cast<float>(player->getPos().x), static_cast<float>(player->getPos().y - 18.));
+
+		rt.draw(txtExplosiveRoundsTimer);
+
+		// Display explosive rounds indicator.
+		sf::CircleShape c(30.f);
+		c.setFillColor(sf::Color::Transparent);
+		c.setOutlineThickness(static_cast<float>(player->explosiveRoundsTime/player->explosiveRoundsTimeSet * 6.));
+		c.setOutlineColor(sf::Color(255, 100, 0, 235));
+		c.setPosition(static_cast<float>(player->getPos().x), static_cast<float>(player->getPos().y));
+		c.setOrigin(30.f, 30.f);
 		rt.draw(c);
 	}
 
@@ -1015,32 +1100,41 @@ void CluckADuck::gmDuckKilled(Ducky* duck)
 			this->addBlast(duck->getPos(), 225., 10.);
 		}
 
+		// Make explosion sound.
+		sndExplosion.play();
+
 		// Increase kill count.
 		this->duckBossCount++;
 	}
 	
 	// Random powerup drop.
 	Powerup* powerup = NULL;
-	double r = randomdexpd( (this->gamemode == MODE_MOO) ? 12. : 8.);
-	if (r >= (this->gamemode == MODE_MOO ? 0.995 : 0.975))
+	double r = randomdexpd( (this->gamemode == MODE_MOO) ? 24. : 8.);
+	if (r >= 0.9925)
 	{
 		// Life power up.
 		powerup = new Powerup();
 		powerup->setupLifePowerup(this);
 	}
-	else if (r >= (this->gamemode == MODE_MOO ? 0.98 : 0.925))
+	else if (r >= 0.98)
+	{
+		// Explosive rounds power up.
+		powerup = new Powerup();
+		powerup->setupExpRoundsPowerup(this);
+	}
+	else if (r >= 0.95)
 	{
 		// Invicibility power up.
 		powerup = new Powerup();
 		powerup->setupInvPowerup(this);
 	}
-	else if (r >= (this->gamemode == MODE_MOO ? 0.95 : 0.825))
+	else if (r >= 0.90)
 	{
 		// Bomb power up.
 		powerup = new Powerup();
 		powerup->setupBombPowerup(this);
 	}
-	else if (r >= (this->gamemode == MODE_MOO ? 0.25 : 0.125))
+	else if (r >= 0.125)
 	{
 		// Points power up.
 		powerup = new Powerup();
@@ -1105,6 +1199,29 @@ void CluckADuck::gmDuckHitPlayer(Ducky* duck)
 
 void CluckADuck::gmPlayerHitDuck(Ducky* duck, Bullet* bullet)
 {
+	// Do explosive damage if using explosive rounds.
+	if (player->explosiveRounds)
+	{
+		// Create explosion.
+		Blast * blast = this->addBlast(bullet->getPos(), 120.);
+
+		// Set explosion damage.
+		if (this->gamemode == MODE_NORMAL)
+		{
+			blast->damage = 0.35 + 0.35*(level * 0.35);
+		}
+		else if (this->gamemode == MODE_MOO)
+		{
+			blast->damage = 0.35;
+		}
+
+		// Make small explosion sound.
+		sndExplosionSmall.play();
+
+		// Increase explosive rounds counter.
+		this->usedExpRounds++;
+	}
+
 	// Remove health.
 	duck->health -= bullet->damage;
 }
@@ -1155,12 +1272,15 @@ void CluckADuck::gmPlayerDetonateBomb(Blast* blast)
 	// Set damage.
 	if (this->gamemode == MODE_NORMAL)
 	{
-		blast->damage = 17.5 + 17.5*(level * 0.25);
+		blast->damage = 17.5 + 17.5*(level * 0.35);
 	}
 	else if (this->gamemode == MODE_MOO)
 	{
 		blast->damage = 10.;
 	}
+
+	// Make explosion sound.
+	sndExplosion.play();
 
 	// Increase used bomb counter.
 	this->usedBombs++;
@@ -1178,11 +1298,13 @@ void CluckADuck::gmPlayerPickUpPowerup(Powerup* powerup)
 	powerup->use();
 
 	// Show indicator.
-	
 	switch (powerup->powerType)
 	{
 	case Powerup::TYPE_BOMB:
 		this->addIndicator("+1 Bomb", powerup->getPos(), 255, 25, 0);
+		break;
+	case Powerup::TYPE_EXPROUNDS:
+		this->addIndicator("Explosive Rounds", powerup->getPos(), 255, 25, 0);
 		break;
 	case Powerup::TYPE_INV:
 		this->addIndicator("Invincibility", powerup->getPos(), 25, 50, 255);

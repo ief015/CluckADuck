@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Overlay.hpp"
+#include "UI/ClickableText.hpp"
 
 #include <SFML/Graphics.hpp>
 
@@ -11,10 +12,11 @@ private:
 	sf::Text txtTitle;
 	sf::Text txtSubTitle;
 
-	sf::Text txtMenu;
 	sf::Text txtInstructions;
-
 	sf::Sprite sprIcon;
+
+	ClickableText* btnNormalMode;
+	ClickableText* btnMooMode;
 
 public:
 	CluckADuck* game;
@@ -34,4 +36,5 @@ public:
 	virtual void onMouseMove(int x, int y, int dx, int dy);
 	virtual void onKeyDown(int key);
 	virtual void onKeyUp(int key);
+	virtual void onKeyText(int ch);
 };

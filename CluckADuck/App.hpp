@@ -28,6 +28,7 @@ protected:
 	virtual void onMouseMove(int x, int y, int dx, int dy);
 	virtual void onKeyDown(int key);
 	virtual void onKeyUp(int key);
+	virtual void onKeyText(int ch);
 	virtual void onWindowResize(unsigned w, unsigned h);
 	virtual void onWindowClose();
 

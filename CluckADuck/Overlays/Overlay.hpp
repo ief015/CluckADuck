@@ -1,5 +1,6 @@
 #pragma once
 #include "OverlayManager.hpp"
+#include "UI/Widget.hpp"
 
 #include <SFML/Graphics.hpp>
 
@@ -12,26 +13,31 @@ private:
 	bool queueDeletion;
 
 protected:
-	inline void overrideControls(bool enable) { hogControls = enable; }
+	Widget* ui;
+
+	inline void overrideControls(bool enable) { this->hogControls = enable; }
 
 public:
-	Overlay() : manager(NULL), hogControls(false), queueDeletion(false) {}
-	virtual ~Overlay() {}
+	Overlay();
+	virtual ~Overlay();
 
-	inline void close() { queueDeletion = true; }
+	// Properties.
 	inline bool isShowing() const { return manager != NULL; }
-	inline bool isOverridingControls() const { return hogControls; }
+	inline bool isOverridingControls() const { return this->hogControls; }
+	
+	// Methods.
+	void close();
 
-	virtual void onShown() {}
-	virtual void onHide() {}
-
-	virtual void onUpdate(float dt) {}
-	virtual void onDraw(sf::RenderTarget& rt) {}
-
-	virtual void onMouseDown(int x, int y, unsigned b) { }
-	virtual void onMouseUp(int x, int y, unsigned b) { }
-	virtual void onMouseWheel(int x, int y, int d) { }
-	virtual void onMouseMove(int x, int y, int dx, int dy) { }
-	virtual void onKeyDown(int key) { }
-	virtual void onKeyUp(int key) { }
+	// Events.
+	virtual void onShown();
+	virtual void onHide();
+	virtual void onUpdate(float dt);
+	virtual void onDraw(sf::RenderTarget& rt);
+	virtual void onMouseDown(int x, int y, unsigned b);
+	virtual void onMouseUp(int x, int y, unsigned b);
+	virtual void onMouseWheel(int x, int y, int d);
+	virtual void onMouseMove(int x, int y, int dx, int dy);
+	virtual void onKeyDown(int key);
+	virtual void onKeyUp(int key);
+	virtual void onKeyText(int ch);
 };

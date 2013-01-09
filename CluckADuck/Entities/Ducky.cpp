@@ -51,16 +51,25 @@ bool Ducky::StaticInit()
 
 void Ducky::StaticQuit()
 {
-	delete TEXTURE;
+	if (TEXTURE)
+		delete TEXTURE;
 
-	delete SND_QUACK1;
-	delete SND_QUACK2;
-	delete SND_QUACK3;
-	delete SND_QUACK4;
-	delete SNDBUF_QUACK1;
-	delete SNDBUF_QUACK2;
-	delete SNDBUF_QUACK3;
-	delete SNDBUF_QUACK4;
+	if (SND_QUACK1)
+		delete SND_QUACK1;
+	if (SND_QUACK2)
+		delete SND_QUACK2;
+	if (SND_QUACK3)
+		delete SND_QUACK3;
+	if (SND_QUACK4)
+		delete SND_QUACK4;
+	if (SNDBUF_QUACK1)
+		delete SNDBUF_QUACK1;
+	if (SNDBUF_QUACK2)
+		delete SNDBUF_QUACK2;
+	if (SNDBUF_QUACK3)
+		delete SNDBUF_QUACK3;
+	if (SNDBUF_QUACK4)
+		delete SNDBUF_QUACK4;
 }
 
 

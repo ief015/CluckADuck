@@ -23,4 +23,5 @@ public:
 	bool mouseMove(int x, int y, int dx, int dy);
 	bool keyDown(int key);
 	bool keyUp(int key);
+	bool keyText(int ch);
 };

@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Overlay.hpp"
+#include "UI/NameTextbox.hpp"
+#include "../Highscores.hpp"
 
 #include <SFML/Graphics.hpp>
 
@@ -9,8 +11,17 @@ class GameOverOverlay : public Overlay
 {
 private:
 	sf::Text txtGameOver;
+	sf::Text txtPressEnter;
 	sf::Text txtPressEsc;
+	sf::Text txtPressEscScoreboard;
 	sf::Text txtStats;
+
+	NameTextbox* nameTextbox;
+
+	sf::Text txtScoreboardHeader;
+	sf::Text txtScoreboardEntry;
+	Highscores::Score* myScore;
+	bool showHighscore;
 
 public:
 	CluckADuck* game;
@@ -29,4 +40,5 @@ public:
 	virtual void onMouseMove(int x, int y, int dx, int dy);
 	virtual void onKeyDown(int key);
 	virtual void onKeyUp(int key);
+	virtual void onKeyText(int ch);
 };

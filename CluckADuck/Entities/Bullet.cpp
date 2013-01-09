@@ -22,7 +22,8 @@ bool Bullet::StaticInit()
 
 void Bullet::StaticQuit()
 {
-	delete TEXTURE;
+	if (TEXTURE)
+		delete TEXTURE;
 }
 
 

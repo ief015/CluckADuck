@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Overlay.hpp"
-#include "../font.hpp"
+#include "../FontRes.hpp"
 
 #include <SFML/Graphics.hpp>
 
@@ -16,11 +16,11 @@ public:
 	{
 		this->overrideControls(true);
 
-		txtPause = sf::Text("Paused", FontRes::getDefaultFont(), 72);
-		txtPause.setOrigin(txtPause.getGlobalBounds().width/2.f, txtPause.getGlobalBounds().height/2.f);
+		txtPause = sf::Text("Paused", FontRes::getArcadeFont(), 72);
+		txtPause.setOrigin(txtPause.getGlobalBounds().width/2.f, txtPause.getGlobalBounds().height);
 		txtPause.setColor(sf::Color(225, 180, 0));
 
-		txtPauseMsg = sf::Text("Press ESCAPE to resume.", FontRes::getDefaultFont(), 24);
+		txtPauseMsg = sf::Text("Press ESCAPE to resume.", FontRes::getHandWritingFont(), 24);
 		txtPauseMsg.setOrigin(txtPauseMsg.getGlobalBounds().width/2.f, txtPauseMsg.getGlobalBounds().height/2.f);
 		txtPauseMsg.setColor(sf::Color(225, 120, 0));
 	}
@@ -39,7 +39,7 @@ public:
 		txtPause.setPosition(rt.getSize().x/2.f, rt.getSize().y/2.f);
 		rt.draw(txtPause);
 
-		txtPauseMsg.setPosition(rt.getSize().x/2.f, rt.getSize().y/2.f + 64.f);
+		txtPauseMsg.setPosition(rt.getSize().x/2.f, rt.getSize().y/2.f + 48.f);
 		rt.draw(txtPauseMsg);
 	}
 
@@ -57,4 +57,5 @@ public:
 		}
 	}
 	virtual void onKeyUp(int key) { }
+	virtual void onKeyText(int ch) { }
 };

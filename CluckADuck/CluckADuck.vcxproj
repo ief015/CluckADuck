@@ -83,12 +83,15 @@
     <ClCompile Include="CluckADuck.cpp" />
     <ClCompile Include="Entities\Ducky.cpp" />
     <ClCompile Include="Entities\Powerup.cpp" />
-    <ClCompile Include="font.cpp" />
+    <ClCompile Include="FontRes.cpp" />
+    <ClCompile Include="Highscores.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Overlays\GameOverOverlay.cpp" />
     <ClCompile Include="Overlays\InitMenuOverlay.cpp" />
+    <ClCompile Include="Overlays\Overlay.cpp" />
     <ClCompile Include="Overlays\OverlayManager.cpp" />
     <ClCompile Include="Entities\Player.cpp" />
+    <ClCompile Include="Overlays\UI\Widget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.hpp" />
@@ -98,13 +101,17 @@
     <ClInclude Include="Entities\Ducky.hpp" />
     <ClInclude Include="Entities\Entity.hpp" />
     <ClInclude Include="Entities\Powerup.hpp" />
-    <ClInclude Include="font.hpp" />
+    <ClInclude Include="FontRes.hpp" />
+    <ClInclude Include="Highscores.hpp" />
     <ClInclude Include="Overlays\GameOverOverlay.hpp" />
     <ClInclude Include="Overlays\InitMenuOverlay.hpp" />
     <ClInclude Include="Overlays\Overlay.hpp" />
     <ClInclude Include="Overlays\OverlayManager.hpp" />
     <ClInclude Include="Overlays\PauseOverlay.hpp" />
     <ClInclude Include="Entities\Player.hpp" />
+    <ClInclude Include="Overlays\UI\ClickableText.hpp" />
+    <ClInclude Include="Overlays\UI\NameTextbox.hpp" />
+    <ClInclude Include="Overlays\UI\Widget.hpp" />
     <ClInclude Include="utils.hpp" />
     <ClInclude Include="vec2.hpp" />
   </ItemGroup>
