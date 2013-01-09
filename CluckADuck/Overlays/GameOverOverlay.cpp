@@ -297,6 +297,7 @@ void GameOverOverlay::onKeyDown(int key)
 			scoreboard.sortScoreboard(Highscores::SORT_SCORE);
 
 			// Display scoreboard now.
+			ui->removeWidget(nameTextbox);
 			showHighscore = true;
 		}
 
@@ -312,6 +313,7 @@ void GameOverOverlay::onKeyDown(int key)
 		else
 		{
 			// Display scoreboard without saving score.
+			ui->removeWidget(nameTextbox);
 			showHighscore = true;
 		}
 

@@ -33,8 +33,8 @@ void Widget::removeWidget(Widget* widget)
 		if (widgets[i] == widget)
 		{
 			// Remove it from children.
-			widgets.erase(widgets.begin() + i);
 			widgets[i]->parent = NULL;
+			widgets.erase(widgets.begin() + i);
 
 			break;
 		}
